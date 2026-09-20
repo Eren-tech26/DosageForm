@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { DosageGuideSection } from './components/DosageGuideSection';
 import { EquipmentSection } from './components/EquipmentSection';
 import { QrHubSection } from './components/QrHubSection';
@@ -10,17 +10,8 @@ import { DEVELOPER_INFO } from './data/developerInfo';
 import { DosageFormCategory } from './types/pharmacy';
 import { EquipmentId, EQUIPMENT_LIST } from './data/equipmentData';
 import { DOSAGE_FORM_LIST } from './data/dosageFormsData';
-import {
-  Pill,
-  Wrench,
-  QrCode,
-  GraduationCap,
-  Printer,
-  Search,
-  Sparkles,
-  ExternalLink,
-  BookOpen
-} from 'lucide-react';
+import { scrollInfoIntoView } from './utils/scrollToInfo';
+import { Pill, Wrench, QrCode, Printer, Search } from 'lucide-react';
 
 export function App() {
   const urlEquipment = getEquipmentFromUrl();
@@ -39,21 +30,49 @@ export function App() {
     return 'dosage';
   }, [urlEquipment]);
 
+  // Capture the QR payload that opened this browser session ONCE, on first load.
+  // Everything else the student taps afterwards only changes the *selection*, so
+  // the "you just scanned a QR" experience (splash + scan banner) never replays.
+  const [initialScan] = useState<{ form: DosageFormCategory | null; equipment: EquipmentId | null }>(
+    () => ({ form: urlForm, equipment: urlEquipment })
+  );
+
   const [activeTab, setActiveTab] = useState<'dosage' | 'equipment' | 'qr-hub'>(initialTab);
   const [selectedForm, setSelectedForm] = useState<DosageFormCategory | undefined>(
-    urlForm || undefined
+    initialScan.form || undefined
   );
   const [selectedEquipment, setSelectedEquipment] = useState<EquipmentId | null>(
-    urlEquipment || null
+    initialScan.equipment
   );
+  const [scanIntroPlayed, setScanIntroPlayed] = useState(false);
+  const [navTick, setNavTick] = useState(0);
+  // Set when the user opens an item from somewhere else in the app (QR hub, search,
+  // cross-links) so the target info panel can be scrolled into view after rendering.
+  const pendingScrollRef = useRef<'dosage' | 'equipment' | null>(null);
   const [globalSearch, setGlobalSearch] = useState('');
   const [globalSearchOpen, setGlobalSearchOpen] = useState(false);
   const [stickerSheetModalOpen, setStickerSheetModalOpen] = useState(false);
 
+  // Jump to the info panel of a just-opened item once its tab has rendered.
+  useEffect(() => {
+    const target = pendingScrollRef.current;
+    if (!target) return;
+    pendingScrollRef.current = null;
+    const timer = window.setTimeout(() => {
+      scrollInfoIntoView(
+        document.getElementById(target === 'dosage' ? 'dosage-dossier' : 'equipment-dossier')
+      );
+    }, 80);
+    return () => window.clearTimeout(timer);
+  }, [navTick, activeTab, selectedForm, selectedEquipment]);
+
   // Sync tab with browser URL history
   const switchTab = (tab: 'dosage' | 'equipment' | 'qr-hub') => {
+    pendingScrollRef.current = null;
     setActiveTab(tab);
     if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
       const url = new URL(window.location.href);
       url.searchParams.set('tab', tab);
       if (tab === 'dosage') {
@@ -80,7 +99,8 @@ export function App() {
       url.searchParams.set('form', form);
       window.history.replaceState(null, '', url.href);
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    pendingScrollRef.current = 'dosage';
+    setNavTick((t) => t + 1);
   };
 
   const navigateToEquipment = (id: EquipmentId) => {
@@ -93,7 +113,8 @@ export function App() {
       url.searchParams.set('equipment', id);
       window.history.replaceState(null, '', url.href);
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    pendingScrollRef.current = 'equipment';
+    setNavTick((t) => t + 1);
   };
 
   // Global search matching both forms and equipment
@@ -399,7 +420,9 @@ export function App() {
         <div className="space-y-6">
           {activeTab === 'dosage' && (
             <DosageGuideSection
-              scannedCategory={urlForm}
+              scannedCategory={initialScan.form}
+              showScanIntro={Boolean(initialScan.form) && !scanIntroPlayed}
+              onScanIntroDone={() => setScanIntroPlayed(true)}
               selectedCategory={selectedForm}
               onSelectCategory={(form) => setSelectedForm(form)}
               onNavigateToEquipment={navigateToEquipment}
@@ -408,7 +431,9 @@ export function App() {
 
           {activeTab === 'equipment' && (
             <EquipmentSection
-              scannedId={selectedEquipment || urlEquipment}
+              scannedId={initialScan.equipment}
+              selectedId={selectedEquipment}
+              onSelectEquipment={(id) => setSelectedEquipment(id)}
               onNavigateToDosageForm={navigateToDosageForm}
               onOpenStickerModal={() => setStickerSheetModalOpen(true)}
             />

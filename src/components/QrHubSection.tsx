@@ -9,8 +9,6 @@ import {
   Copy,
   Check,
   ExternalLink,
-  Layers,
-  Sparkles
 } from 'lucide-react';
 import { EQUIPMENT_LIST, EquipmentId } from '../data/equipmentData';
 import { DOSAGE_FORM_LIST, PHARMACY_DOSSIERS } from '../data/dosageFormsData';
