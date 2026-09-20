@@ -4,6 +4,7 @@ import { DOSAGE_FORM_LIST, PHARMACY_DOSSIERS } from '../data/dosageFormsData';
 import { DossierCard } from './DossierCard';
 import { ScanIntroSplash } from './ScanIntroSplash';
 import { getFormFromUrl } from '../utils/pharmaQrEncoder';
+import { EquipmentId } from '../data/equipmentData';
 import {
   Search,
   Pill,
@@ -15,6 +16,13 @@ import {
   ChevronRight,
   LayoutGrid
 } from 'lucide-react';
+
+interface DosageGuideSectionProps {
+  scannedCategory?: DosageFormCategory | null;
+  onNavigateToEquipment?: (id: EquipmentId) => void;
+  selectedCategory?: DosageFormCategory;
+  onSelectCategory?: (category: DosageFormCategory) => void;
+}
 
 const getIcon = (category: DosageFormCategory) => {
   switch (category) {
@@ -36,108 +44,125 @@ const getIcon = (category: DosageFormCategory) => {
   }
 };
 
-export const DosageGuideSection: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState<DosageFormCategory>('TABLETS');
+export const DosageGuideSection: React.FC<DosageGuideSectionProps> = ({
+  scannedCategory,
+  onNavigateToEquipment,
+  selectedCategory,
+  onSelectCategory
+}) => {
+  const [internalCategory, setInternalCategory] = useState<DosageFormCategory>(
+    scannedCategory || selectedCategory || 'TABLETS'
+  );
   const [searchQuery, setSearchQuery] = useState('');
-  const [openedFromScan, setOpenedFromScan] = useState(false);
-  const [showSplash, setShowSplash] = useState(false);
+  const [openedFromScan, setOpenedFromScan] = useState(Boolean(scannedCategory));
+  const [showSplash, setShowSplash] = useState(Boolean(scannedCategory));
 
-  // When a QR is scanned it opens this page with ?form=TABLETS — auto-navigate to it.
+  // Sync when prop changes
   useEffect(() => {
-    const fromUrl = getFormFromUrl();
-    if (fromUrl) {
-      setActiveCategory(fromUrl);
+    if (selectedCategory) {
+      setInternalCategory(selectedCategory);
+    }
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    if (scannedCategory) {
+      setInternalCategory(scannedCategory);
       setOpenedFromScan(true);
       setShowSplash(true);
     }
-  }, []);
+  }, [scannedCategory]);
 
-  const currentDossier = PHARMACY_DOSSIERS[activeCategory];
+  const activeCategory = selectedCategory || internalCategory;
+  const currentDossier = PHARMACY_DOSSIERS[activeCategory] || PHARMACY_DOSSIERS['TABLETS'];
 
   const filtered = DOSAGE_FORM_LIST.filter((cat) => {
-    const q = searchQuery.toLowerCase();
+    const q = searchQuery.toLowerCase().trim();
     const d = PHARMACY_DOSSIERS[cat];
     return (
+      !q ||
       cat.toLowerCase().includes(q) ||
       d.categoryTag.toLowerCase().includes(q) ||
-      d.definition.toLowerCase().includes(q)
+      d.definition.toLowerCase().includes(q) ||
+      d.commonExcipients.some((e) => e.toLowerCase().includes(q))
     );
   });
 
   const selectForm = (cat: DosageFormCategory) => {
-    setActiveCategory(cat);
+    setInternalCategory(cat);
+    onSelectCategory?.(cat);
     setOpenedFromScan(false);
-    // Reflect selection in URL so the page can be bookmarked / shared / matches the QR
+
     if (typeof window !== 'undefined') {
-      const newUrl = `${window.location.pathname}?form=${encodeURIComponent(cat)}`;
-      window.history.replaceState(null, '', newUrl);
+      const url = new URL(window.location.href);
+      url.searchParams.delete('equipment');
+      url.searchParams.set('form', cat);
+      url.searchParams.set('tab', 'dosage');
+      window.history.replaceState(null, '', url.href);
     }
   };
 
-  // SCANNED VIEW — QR opened this page: show white-background PharmaQR intro first,
-  // then the form's full information.
-  if (openedFromScan) {
+  // Scanned view splash
+  if (openedFromScan && showSplash) {
     return (
-      <>
-        {showSplash && (
-          <ScanIntroSplash
-            formName={currentDossier.shortName}
-            onContinue={() => setShowSplash(false)}
-          />
-        )}
-        <div className={`space-y-4 transition-opacity duration-500 ${showSplash ? 'opacity-0' : 'opacity-100'}`}>
-          <DossierCard dossier={currentDossier} highlightScanned showQr={false} />
-
-          <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <p className="text-xs text-gray-600">
-              You opened <span className="font-bold text-black">{activeCategory}</span> by scanning its PharmaQR code.
-            </p>
-            <button
-              onClick={() => selectForm('TABLETS')}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer"
-            >
-              <LayoutGrid className="w-4 h-4" />
-              Browse All 12 Dosage Forms
-            </button>
-          </div>
-        </div>
-      </>
+      <ScanIntroSplash
+        formName={currentDossier.shortName}
+        itemType="dosage"
+        onContinue={() => setShowSplash(false)}
+      />
     );
   }
 
   return (
     <div className="space-y-6">
-      {/* Search */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      {/* Banner if opened from QR */}
+      {openedFromScan && (
+        <div className="bg-green-50 border-2 border-green-600 rounded-2xl p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <p className="text-xs sm:text-sm text-green-900">
+            You opened <span className="font-black text-black">{activeCategory}</span> by scanning its permanent PharmaQR code.
+          </p>
+          <button
+            onClick={() => selectForm('TABLETS')}
+            className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 bg-green-700 hover:bg-green-800 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer shrink-0"
+          >
+            <LayoutGrid className="w-3.5 h-3.5" />
+            Browse All 12 Dosage Forms
+          </button>
+        </div>
+      )}
+
+      {/* Search Toolbar */}
+      <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-600 text-white text-xs font-bold uppercase tracking-wider">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-700 text-white text-xs font-bold uppercase tracking-wider">
             All 12 Dosage Forms
           </span>
           <p className="text-xs text-gray-600 mt-1.5">
-            Pick a form on the left, or scan its fixed QR code to open it directly.
+            Select a dosage form from the index, or scan its fixed QR code to open its academic dossier.
           </p>
         </div>
+
         <div className="relative w-full sm:w-72">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
-            placeholder="Search dosage forms..."
+            placeholder="Search dosage forms, excipients..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-hidden text-black"
+            className="w-full pl-9 pr-3 py-2 text-xs bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:bg-white focus:outline-hidden text-black transition-all"
           />
         </div>
       </div>
 
       {/* Browser layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Index */}
-        <div className="lg:col-span-4 bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
-          <div className="px-2 py-1 text-xs font-black uppercase tracking-wider text-gray-500 flex items-center justify-between">
+        {/* Index List */}
+        <div className="lg:col-span-4 bg-white border border-gray-200 rounded-2xl p-4 shadow-xs">
+          <div className="px-2 py-1 text-xs font-black uppercase tracking-wider text-gray-700 flex items-center justify-between border-b border-gray-100 pb-2">
             <span>Dosage Form Index</span>
-            <span>{filtered.length}/12</span>
+            <span className="font-mono text-gray-500">{filtered.length}/12</span>
           </div>
-          <div className="space-y-1.5 mt-2 max-h-[70vh] overflow-y-auto pr-1">
+
+          <div className="space-y-1.5 mt-3 max-h-[75vh] overflow-y-auto pr-1">
             {filtered.map((cat) => {
               const active = activeCategory === cat;
               const d = PHARMACY_DOSSIERS[cat];
@@ -145,10 +170,10 @@ export const DosageGuideSection: React.FC = () => {
                 <button
                   key={cat}
                   onClick={() => selectForm(cat)}
-                  className={`w-full p-3 rounded-xl text-left flex items-center justify-between group transition-colors cursor-pointer border ${
+                  className={`w-full p-2.5 rounded-xl text-left flex items-center justify-between group transition-all cursor-pointer border ${
                     active
-                      ? 'bg-green-600 text-white border-green-600'
-                      : 'bg-white hover:bg-green-50 border-gray-200 text-black'
+                      ? 'bg-green-700 text-white border-green-700 shadow-xs'
+                      : 'bg-white hover:bg-green-50/70 border-gray-200 text-black'
                   }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
@@ -161,13 +186,21 @@ export const DosageGuideSection: React.FC = () => {
                     </div>
                     <div className="min-w-0">
                       <h4 className="text-xs font-black truncate">{cat}</h4>
-                      <p className={`text-[11px] truncate mt-0.5 ${active ? 'text-green-50' : 'text-gray-500'}`}>
+                      <p
+                        className={`text-[11px] truncate mt-0.5 ${
+                          active ? 'text-green-100' : 'text-gray-500'
+                        }`}
+                      >
                         {d.shortName}
                       </p>
                     </div>
                   </div>
                   <ChevronRight
-                    className={`w-4 h-4 shrink-0 ${active ? 'text-white' : 'text-gray-400 group-hover:translate-x-0.5 transition-transform'}`}
+                    className={`w-4 h-4 shrink-0 transition-transform ${
+                      active
+                        ? 'text-white translate-x-0.5'
+                        : 'text-gray-400 group-hover:translate-x-0.5'
+                    }`}
                   />
                 </button>
               );
@@ -175,9 +208,13 @@ export const DosageGuideSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Detail */}
+        {/* Detail Panel */}
         <div className="lg:col-span-8">
-          <DossierCard dossier={currentDossier} highlightScanned={openedFromScan} />
+          <DossierCard
+            dossier={currentDossier}
+            highlightScanned={openedFromScan}
+            onNavigateToEquipment={onNavigateToEquipment}
+          />
         </div>
       </div>
     </div>
