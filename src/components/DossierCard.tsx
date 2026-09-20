@@ -7,9 +7,21 @@ import {
   TestTube,
   Lightbulb,
   QrCode,
-  Route
+  Route,
+  Download,
+  Copy,
+  Check,
+  ShieldAlert,
+  Globe
 } from 'lucide-react';
-import { buildFormUrl, generateQrDataUrl } from '../utils/pharmaQrEncoder';
+import {
+  buildFormUrl,
+  generateQrDataUrl,
+  downloadQrImage,
+  useQrBaseUrl,
+  analyzeUrlStatus
+} from '../utils/pharmaQrEncoder';
+import { VercelLoginGuideModal } from './VercelLoginGuideModal';
 
 interface DossierCardProps {
   dossier: PharmacyDossier;
@@ -23,7 +35,12 @@ export const DossierCard: React.FC<DossierCardProps> = ({
   showQr = true
 }) => {
   const [qrUrl, setQrUrl] = useState<string>('');
-  const formUrl = buildFormUrl(dossier.category);
+  const [copied, setCopied] = useState(false);
+  const [isVercelModalOpen, setIsVercelModalOpen] = useState(false);
+  const [baseUrl] = useQrBaseUrl();
+
+  const formUrl = buildFormUrl(dossier.category, baseUrl);
+  const urlStatus = analyzeUrlStatus(formUrl);
 
   useEffect(() => {
     if (!showQr) return;
@@ -35,6 +52,18 @@ export const DossierCard: React.FC<DossierCardProps> = ({
       cancelled = true;
     };
   }, [formUrl, showQr]);
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(formUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleDownloadQr = () => {
+    if (!qrUrl) return;
+    const safeName = dossier.category.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    downloadQrImage(qrUrl, `pharmaqr-${safeName}.png`);
+  };
 
   return (
     <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
@@ -82,28 +111,104 @@ export const DossierCard: React.FC<DossierCardProps> = ({
             </div>
 
             {/* Fixed QR code that opens this exact form's guide */}
-            <div className="lg:col-span-7 bg-green-50/50 border border-green-200 rounded-xl p-5 flex flex-col sm:flex-row items-center gap-5">
-              <div className="bg-white p-3 rounded-xl border border-green-200 shadow-sm shrink-0">
-                {qrUrl ? (
-                  <img src={qrUrl} alt={`Scan to open ${dossier.category} guide`} className="w-40 h-40 object-contain" />
-                ) : (
-                  <div className="w-40 h-40 flex items-center justify-center text-gray-400 text-xs">
-                    Loading…
-                  </div>
-                )}
-              </div>
-              <div className="flex-1 min-w-0 text-center sm:text-left">
-                <div className="flex items-center gap-2 justify-center sm:justify-start">
-                  <QrCode className="w-4 h-4 text-green-700" />
-                  <h4 className="text-sm font-black text-black uppercase tracking-wide">
-                    Fixed QR — Scan to Open This Guide
-                  </h4>
+            <div className="lg:col-span-7 bg-green-50/50 border border-green-200 rounded-xl p-5 flex flex-col justify-between gap-4">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+                <div className="bg-white p-3 rounded-xl border border-green-200 shadow-sm shrink-0 flex flex-col items-center">
+                  {qrUrl ? (
+                    <img
+                      src={qrUrl}
+                      alt={`Scan to open ${dossier.category} guide`}
+                      className="w-36 h-36 sm:w-40 sm:h-40 object-contain"
+                    />
+                  ) : (
+                    <div className="w-36 h-36 sm:w-40 sm:h-40 flex items-center justify-center text-gray-400 text-xs">
+                      Loading…
+                    </div>
+                  )}
+                  {/* Download QR button under the image */}
+                  <button
+                    onClick={handleDownloadQr}
+                    disabled={!qrUrl}
+                    className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white rounded-lg text-[11px] font-bold transition-colors cursor-pointer w-full justify-center"
+                    title="Download 600x600 high-res PNG for print/chart"
+                  >
+                    <Download className="w-3 h-3" />
+                    Download PNG
+                  </button>
                 </div>
-                <p className="text-xs text-gray-700 mt-1.5 leading-relaxed">
-                  This is the permanent QR code for <span className="font-bold text-green-800">{dossier.category}</span>.
-                  Scanning it on any device redirects straight to this dosage form's Student Guide with all its information.
-                </p>
-                <p className="text-[11px] text-gray-500 mt-2 font-mono break-all">{formUrl}</p>
+
+                <div className="flex-1 min-w-0 text-center sm:text-left">
+                  <div className="flex items-center gap-2 justify-center sm:justify-start">
+                    <QrCode className="w-4 h-4 text-green-700" />
+                    <h4 className="text-sm font-black text-black uppercase tracking-wide">
+                      Fixed QR — Scan to Open This Guide
+                    </h4>
+                  </div>
+                  <p className="text-xs text-gray-700 mt-1 leading-relaxed">
+                    This is the permanent QR code for <span className="font-bold text-green-800">{dossier.category}</span>.
+                    Scanning it redirects straight to this dosage form's Student Guide.
+                  </p>
+
+                  <div className="mt-2.5 p-2 bg-white rounded-lg border border-gray-200 flex items-center justify-between gap-2">
+                    <p className="text-[11px] text-gray-600 font-mono truncate select-all">
+                      {formUrl}
+                    </p>
+                    <button
+                      onClick={handleCopyLink}
+                      className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded text-[11px] font-semibold transition-colors cursor-pointer shrink-0"
+                      title="Copy URL"
+                    >
+                      {copied ? (
+                        <>
+                          <Check className="w-3 h-3 text-green-600" />
+                          <span className="text-green-700">Copied</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3" />
+                          <span>Copy</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Warning / Status banner regarding Vercel login */}
+                  {urlStatus.isVercelPreview || urlStatus.isLocal ? (
+                    <div className="mt-3 bg-amber-50 border border-amber-300 rounded-xl p-2.5 text-left text-xs">
+                      <div className="flex items-start gap-2">
+                        <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                        <div className="min-w-0">
+                          <p className="font-bold text-amber-900 leading-snug">
+                            Vercel Login Warning
+                          </p>
+                          <p className="text-[11px] text-amber-800 mt-0.5 leading-tight">
+                            Scanners may be asked to log in to Vercel on preview or local URLs.
+                          </p>
+                          <button
+                            onClick={() => setIsVercelModalOpen(true)}
+                            className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-bold text-amber-900 underline hover:text-black cursor-pointer"
+                          >
+                            🛠️ Fix Vercel Login / Set Production Domain
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mt-3 flex items-center justify-between gap-2 pt-2 border-t border-green-200/60">
+                      <span className="text-[11px] text-green-800 font-medium flex items-center gap-1">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-green-600" />
+                        Publicly Scannable QR
+                      </span>
+                      <button
+                        onClick={() => setIsVercelModalOpen(true)}
+                        className="inline-flex items-center gap-1 text-[11px] text-gray-600 hover:text-black font-semibold underline cursor-pointer"
+                      >
+                        <Globe className="w-3 h-3 text-gray-500" />
+                        Target Domain Settings
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -273,6 +378,12 @@ export const DossierCard: React.FC<DossierCardProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Vercel Login Guide Modal */}
+      <VercelLoginGuideModal
+        isOpen={isVercelModalOpen}
+        onClose={() => setIsVercelModalOpen(false)}
+      />
     </div>
   );
 };

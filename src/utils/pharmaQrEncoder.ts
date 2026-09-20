@@ -1,15 +1,172 @@
+import { useState, useEffect } from 'react';
 import QRCode from 'qrcode';
 import { DosageFormCategory } from '../types/pharmacy';
 import { DOSAGE_FORM_LIST } from '../data/dosageFormsData';
 
+export const QR_BASE_STORAGE_KEY = 'pharmaqr_custom_base_url';
+export const QR_BASE_CHANGE_EVENT = 'pharmaqr-base-url-change';
+
+/**
+ * Get user-configured custom base URL from localStorage if set.
+ */
+export function getCustomBaseUrl(): string {
+  if (typeof window === 'undefined') return '';
+  try {
+    return localStorage.getItem(QR_BASE_STORAGE_KEY) || '';
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * Save custom base URL to localStorage and notify all listeners across the app.
+ */
+export function setCustomBaseUrl(url: string): void {
+  if (typeof window === 'undefined') return;
+  const trimmed = url.trim();
+  try {
+    if (trimmed) {
+      localStorage.setItem(QR_BASE_STORAGE_KEY, trimmed);
+    } else {
+      localStorage.removeItem(QR_BASE_STORAGE_KEY);
+    }
+  } catch {
+    // Ignore storage quota or access errors
+  }
+  window.dispatchEvent(new CustomEvent(QR_BASE_CHANGE_EVENT, { detail: trimmed }));
+}
+
+/**
+ * Resolves the effective base URL used to generate QR codes.
+ * Priority:
+ * 1. User-customized base URL in localStorage (configured in app)
+ * 2. Vite environment variable: VITE_PUBLIC_URL or VITE_SITE_URL
+ * 3. Browser window origin + pathname
+ */
+export function getEffectiveBaseUrl(): string {
+  // 1. User custom base URL
+  const custom = getCustomBaseUrl();
+  if (custom) {
+    return custom.endsWith('/') ? custom : `${custom}/`;
+  }
+
+  // 2. Vite env var
+  const envUrl = (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_PUBLIC_URL ||
+                 (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_SITE_URL;
+  if (envUrl && typeof envUrl === 'string' && envUrl.trim()) {
+    const e = envUrl.trim();
+    return e.endsWith('/') ? e : `${e}/`;
+  }
+
+  // 3. Fallback to current browser location
+  if (typeof window !== 'undefined') {
+    const origin = window.location.origin;
+    let path = window.location.pathname;
+    if (!path.endsWith('/')) {
+      // Retain folder path if not ending in slash
+      path = path.substring(0, path.lastIndexOf('/') + 1) || '/';
+    }
+    return `${origin}${path}`;
+  }
+
+  return 'https://pharma-guide.app/';
+}
+
+/**
+ * React hook that returns the current QR base URL and a setter to update it.
+ * Re-renders automatically when the base URL changes anywhere in the app.
+ */
+export function useQrBaseUrl(): [string, (url: string) => void] {
+  const [baseUrl, setBaseUrlState] = useState<string>(() => getEffectiveBaseUrl());
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setBaseUrlState(getEffectiveBaseUrl());
+    };
+    window.addEventListener(QR_BASE_CHANGE_EVENT, handleUpdate);
+    window.addEventListener('storage', handleUpdate);
+    return () => {
+      window.removeEventListener(QR_BASE_CHANGE_EVENT, handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
+    };
+  }, []);
+
+  const setBase = (newUrl: string) => {
+    setCustomBaseUrl(newUrl);
+    setBaseUrlState(getEffectiveBaseUrl());
+  };
+
+  return [baseUrl, setBase];
+}
+
+export interface UrlStatusAnalysis {
+  isLocal: boolean;
+  isVercelPreview: boolean;
+  isVercelProduction: boolean;
+  isAnyVercel: boolean;
+  hasCustomUrl: boolean;
+  warningMessage: string | null;
+}
+
+/**
+ * Inspects a base URL to detect if it is a local address or Vercel preview URL,
+ * which commonly triggers the "Log in to Vercel" prompt for phone scanners.
+ */
+export function analyzeUrlStatus(targetUrl?: string): UrlStatusAnalysis {
+  const urlToAnalyze = targetUrl || getEffectiveBaseUrl();
+  let hostname = '';
+  try {
+    hostname = new URL(urlToAnalyze).hostname;
+  } catch {
+    hostname = typeof window !== 'undefined' ? window.location.hostname : '';
+  }
+
+  const isLocal = hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.local') || hostname.includes('e2b.app');
+  const isAnyVercel = hostname.endsWith('.vercel.app');
+  // Vercel preview URLs usually contain "-git-" or multiple dashes/hashes
+  const isVercelPreview = isAnyVercel && (
+    hostname.includes('-git-') ||
+    hostname.split('.vercel.app')[0].split('-').length > 3
+  );
+  const isVercelProduction = isAnyVercel && !isVercelPreview;
+  const hasCustomUrl = Boolean(getCustomBaseUrl());
+
+  let warningMessage: string | null = null;
+  if (isLocal) {
+    warningMessage = 'Target is a local/sandbox URL. Mobile cameras scanning this QR code cannot access localhost.';
+  } else if (isVercelPreview) {
+    warningMessage = 'Target is a Vercel preview deployment URL. Vercel automatically requires a team login for preview URLs. Use your public production domain.';
+  }
+
+  return {
+    isLocal,
+    isVercelPreview,
+    isVercelProduction,
+    isAnyVercel,
+    hasCustomUrl,
+    warningMessage
+  };
+}
+
+/**
+ * Triggers a download of the QR code as a PNG file.
+ */
+export function downloadQrImage(dataUrl: string, filename: string): void {
+  if (typeof window === 'undefined') return;
+  const link = document.createElement('a');
+  link.href = dataUrl;
+  link.download = filename.endsWith('.png') ? filename : `${filename}.png`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
 // Build the FIXED URL that opens a specific dosage form's Student Guide tab.
 // Scanning this QR (e.g. ?form=TABLETS) redirects the browser to that form's guide.
-export function buildFormUrl(form: DosageFormCategory): string {
-  const base =
-    typeof window !== 'undefined'
-      ? window.location.origin + window.location.pathname
-      : 'https://pharma-guide.app/';
-  return `${base}?form=${encodeURIComponent(form)}`;
+export function buildFormUrl(form: DosageFormCategory, customBase?: string): string {
+  const base = customBase || getEffectiveBaseUrl();
+  const cleanBase = base.endsWith('/') ? base : `${base}/`;
+  return `${cleanBase}?form=${encodeURIComponent(form)}`;
 }
 
 /**
