@@ -2,7 +2,7 @@ import { DosageGuideSection } from './components/DosageGuideSection';
 import { DeveloperInfoCard } from './components/DeveloperInfoCard';
 import { getFormFromUrl } from './utils/pharmaQrEncoder';
 import { DEVELOPER_INFO } from './data/developerInfo';
-import { MiniIncubatorGuide } from './components/MiniIncubatorGuide';
+import { EquipmentSection } from './components/EquipmentSection';
 import { getEquipmentFromUrl } from './utils/equipmentQr';
 import { GraduationCap } from 'lucide-react';
 
@@ -55,7 +55,10 @@ export function App() {
         )}
 
         <div className="space-y-6">
-          {scannedEquipment ? <MiniIncubatorGuide /> : <DosageGuideSection />}
+          {scannedEquipment ? <EquipmentSection scannedId={scannedEquipment} /> : <>
+            <DosageGuideSection />
+            <EquipmentSection />
+          </>}
 
           {/* Developer credit */}
           <DeveloperInfoCard />
