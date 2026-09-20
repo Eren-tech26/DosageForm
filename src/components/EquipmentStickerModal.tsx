@@ -260,7 +260,7 @@ export const EquipmentStickerModal: React.FC<EquipmentStickerModalProps> = ({
             <div className="space-y-4">
               <div className="text-center print:hidden mb-2">
                 <p className="text-xs text-gray-600">
-                  Ready to print: All 6 laboratory equipment labels organized in a 2-column grid.
+                  Ready to print: All 7 laboratory equipment labels organized in a 2-column grid.
                   Cut along outer borders and affix to lab apparatus.
                 </p>
               </div>

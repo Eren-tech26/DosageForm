@@ -6,7 +6,8 @@ export type EquipmentId =
   | 'tablet-friability-machine'
   | 'ir-spectrophotometer'
   | 'cyclone-separator'
-  | 'quartz-muffle-tray';
+  | 'quartz-muffle-tray'
+  | 'ph-meter';
 
 export interface EquipmentGuide {
   id: EquipmentId;
@@ -306,6 +307,61 @@ export const EQUIPMENT_LIST: EquipmentGuide[] = [
     ],
     relatedDosageForms: ['TABLETS', 'CAPSULES', 'INHALATION PRODUCTS'],
     permanentUrl: 'https://dosage-form.vercel.app/?equipment=cyclone-separator'
+  },
+  {
+    id: 'ph-meter',
+    name: 'Digital pH Meter',
+    category: 'Pharmaceutical Analysis',
+    department: 'Pharmaceutics & Quality Control Lab',
+    assetTag: 'PHARM-ANA-PHM-07',
+    modelExample: 'Fisher Scientific Accumet™ AB150 / Hanna HI5221 Bench pH Meter',
+    image: '/images/equipment/ph-meter.jpg',
+    imageCaption: 'Benchtop digital pH meter with glass combination electrode immersed in a laboratory buffer solution for pharmaceutical quality control.',
+    definition: 'A precision electrochemical instrument that measures the hydrogen-ion activity of an aqueous sample and reports its acidity or alkalinity as pH. It is an essential release and in-process control instrument for pharmaceutical solutions, suspensions, creams, and purified water.',
+    principle: 'The glass sensing membrane develops an electrical potential proportional to hydrogen-ion activity across the membrane. A stable reference electrode completes the electrochemical cell, while the meter measures the potential difference, applies temperature compensation, and converts it to pH using the Nernst equation. Accurate readings require hydration, clean electrodes, and calibration with traceable standard buffers.',
+    sopBrief: 'Rinse electrode · Calibrate with pH 7 and 4 or 10 buffers · Immerse without touching vessel · Record stabilized value',
+    safetyCaution: 'Glass electrode is fragile. Wear gloves and goggles; never wipe the bulb dry or store it in distilled water.',
+    uses: [
+      'pH determination of oral liquids, syrups, elixirs, eye drops, injections, and other aqueous pharmaceutical preparations',
+      'In-process adjustment and final release testing of buffers, dissolution media, and reconstituted formulations',
+      'Checking purified water and laboratory water systems for compliance with the applicable pharmacopoeial specification',
+      'Monitoring pH-dependent stability, preservative efficacy, solubility, and viscosity of formulations',
+      'pH measurement of creams, gels, suspensions, and semisolid preparations using a suitable surface or immersion electrode'
+    ],
+    specifications: [
+      ['Measurement Range', 'pH 0.00 to 14.00 (typical benchtop operating range)'],
+      ['Resolution', '0.01 pH (selectable 0.001 pH on advanced models)'],
+      ['Accuracy', '±0.01 pH ±1 digit after proper calibration'],
+      ['Temperature Range', '0 to 100°C with automatic or manual temperature compensation'],
+      ['Calibration', 'Up to 3 or 5 points using certified pH 4.01, 7.00, and 10.01 buffers'],
+      ['Electrode', 'Combination glass pH electrode with Ag/AgCl reference and refillable electrolyte'],
+      ['Input / Display', 'High-impedance BNC input; backlit digital display with stability indicator'],
+      ['Data Handling', 'Calibration slope/offset display, GLP timestamp, and USB/serial export on advanced models']
+    ],
+    operation: [
+      'Inspect the electrode bulb, junction, cable, and connector for cracks, salt deposits, or trapped air bubbles. Confirm the meter is connected to a stable power supply.',
+      'Remove the storage cap and rinse the electrode with purified water. Blot gently with lint-free tissue; do not rub or wipe the sensitive glass membrane.',
+      'Calibrate at room temperature with fresh, traceable buffer solutions. Use pH 7.00 first, followed by pH 4.01 for acidic samples or pH 10.01 for alkaline samples.',
+      'Rinse between buffers and samples to prevent carryover. Never return used buffer to its stock bottle.',
+      'Transfer the well-mixed sample to a clean beaker, immerse the bulb and reference junction fully, and keep the electrode away from the vessel walls and stir bar.',
+      'Stir gently and wait for the stability indicator or a constant reading. Record sample identification, temperature, pH, calibration slope, and analyst initials.',
+      'Rinse the electrode after use and return it to pH-electrode storage solution. Keep the sensing bulb hydrated whenever it is not in use.'
+    ],
+    precautions: [
+      'Never store a glass pH electrode dry or in distilled/deionized water; use the manufacturer-recommended KCl storage solution.',
+      'Do not touch the glass bulb against the beaker, magnetic stir bar, or any hard surface. A cracked bulb makes the result invalid.',
+      'Use fresh buffers within their labeled validity period and discard contaminated or visibly cloudy solutions.',
+      'Strong solvents, concentrated acids, proteins, and viscous creams can foul the junction; select a compatible electrode and clean it according to the manufacturer instructions.',
+      'pH is temperature-dependent. Measure at the method temperature or document the temperature compensation used; do not compare readings taken at different temperatures without context.'
+    ],
+    qcChecks: [
+      'Perform two- or three-point calibration at the beginning of each analytical session and verify the slope is within the manufacturer or laboratory SOP limit, commonly 95–105%.',
+      'Run a certified check buffer as an independent verification after calibration and whenever results appear abnormal.',
+      'Inspect electrode response time, offset, junction condition, and fill solution level during routine maintenance.',
+      'Maintain calibration, buffer lot, cleaning, electrode replacement, and performance verification records in the equipment logbook.'
+    ],
+    relatedDosageForms: ['SYRUPS', 'LIQUID DOSAGE FORMS', 'EYE/EAR DROPS', 'INJECTIONS', 'OINTMENTS & CREAMS'],
+    permanentUrl: 'https://dosage-form.vercel.app/?equipment=ph-meter'
   },
   {
     id: 'quartz-muffle-tray',
