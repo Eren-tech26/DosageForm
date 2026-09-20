@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#16a34a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#15803d;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#22c55e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16a34a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Outer rounded square with green background -->
+  <rect x="10" y="10" width="220" height="220" rx="48" ry="48" fill="url(#grad1)" />
+
+  <!-- Inner white shield/rounded square for emblem -->
+  <rect x="30" y="30" width="180" height="180" rx="32" ry="32" fill="#ffffff" />
+
+  <!-- Stylized pill/capsule shape (main pharma element) -->
+  <g transform="translate(120,110) rotate(-30)">
+    <!-- Left half (green caplet cap) -->
+    <path d="M -55,-20 a20,20 0 0,0 0,40 L 0,20 L 0,-20 Z" fill="url(#grad2)" />
+    <!-- Right half (white body) -->
+    <path d="M 55,-20 a20,20 0 0,1 0,40 L 0,20 L 0,-20 Z" fill="#f0fdf4" stroke="#16a34a" stroke-width="3" />
+    <!-- Divider line -->
+    <line x1="0" y1="-20" x2="0" y2="20" stroke="#16a34a" stroke-width="3" />
+  </g>
+
+  <!-- QR corner markers around the pill (subtle QR-code reference) -->
+  <!-- Top-left marker -->
+  <g transform="translate(50,50)">
+    <rect x="0" y="0" width="22" height="22" rx="3" fill="#166534" />
+    <rect x="5" y="5" width="12" height="12" rx="2" fill="#ffffff" />
+    <rect x="8" y="8" width="6" height="6" rx="1" fill="#166534" />
+  </g>
+  <!-- Top-right marker -->
+  <g transform="translate(168,50)">
+    <rect x="0" y="0" width="22" height="22" rx="3" fill="#166534" />
+    <rect x="5" y="5" width="12" height="12" rx="2" fill="#ffffff" />
+    <rect x="8" y="8" width="6" height="6" rx="1" fill="#166534" />
+  </g>
+  <!-- Bottom-left marker -->
+  <g transform="translate(50,168)">
+    <rect x="0" y="0" width="22" height="22" rx="3" fill="#166534" />
+    <rect x="5" y="5" width="12" height="12" rx="2" fill="#ffffff" />
+    <rect x="8" y="8" width="6" height="6" rx="1" fill="#166534" />
+  </g>
+  <!-- Bottom-right marker -->
+  <g transform="translate(168,168)">
+    <rect x="0" y="0" width="22" height="22" rx="3" fill="#166534" />
+    <rect x="5" y="5" width="12" height="12" rx="2" fill="#ffffff" />
+    <rect x="8" y="8" width="6" height="6" rx="1" fill="#166534" />
+  </g>
+
+  <!-- Small decorative data dots (like QR modules) -->
+  <circle cx="82" cy="82" r="3.5" fill="#16a34a" />
+  <circle cx="158" cy="82" r="3.5" fill="#16a34a" />
+  <circle cx="82" cy="158" r="3.5" fill="#16a34a" />
+  <circle cx="96" cy="72" r="2.5" fill="#22c55e" />
+  <circle cx="144" cy="72" r="2.5" fill="#22c55e" />
+  <circle cx="72" cy="96" r="2.5" fill="#22c55e" />
+  <circle cx="168" cy="96" r="2.5" fill="#22c55e" />
+  <circle cx="72" cy="144" r="2.5" fill="#22c55e" />
+  <circle cx="168" cy="144" r="2.5" fill="#22c55e" />
+  <circle cx="96" cy="168" r="2.5" fill="#22c55e" />
+  <circle cx="144" cy="168" r="2.5" fill="#22c55e" />
+
+  <!-- Rx-style accent on pill (small plus/medical cross) -->
+  <g transform="translate(120,160)">
+    <rect x="-3" y="-10" width="6" height="20" rx="2" fill="url(#grad2)" />
+    <rect x="-10" y="-3" width="20" height="6" rx="2" fill="url(#grad2)" />
+  </g>
+</svg>
