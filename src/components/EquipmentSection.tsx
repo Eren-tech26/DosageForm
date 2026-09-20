@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Wrench,
   QrCode,
@@ -8,7 +8,6 @@ import {
   Download,
   Copy,
   CheckCircle2,
-  AlertTriangle,
   FileText,
   TestTube,
   ShieldAlert,
@@ -24,18 +23,30 @@ import { EQUIPMENT_LIST, EquipmentGuide, EquipmentId, EQUIPMENT_BY_ID } from '..
 import { generateEquipmentQrDataUrl, downloadQrImage, buildPermanentEquipmentUrl } from '../utils/equipmentQr';
 import { EquipmentStickerModal } from './EquipmentStickerModal';
 import { DosageFormCategory } from '../types/pharmacy';
+import { scrollInfoIntoView } from '../utils/scrollToInfo';
 
 interface EquipmentSectionProps {
+  /**
+   * The instrument captured at page load when the browser was opened by
+   * scanning a machine QR sticker. `null` when the page was opened normally.
+   */
   scannedId?: EquipmentId | null;
+  /** Instrument requested from elsewhere in the app (QR hub, search, cross-links). */
+  selectedId?: EquipmentId | null;
+  onSelectEquipment?: (id: EquipmentId) => void;
   onNavigateToDosageForm?: (form: DosageFormCategory) => void;
   onOpenStickerModal?: () => void;
 }
 
 export const EquipmentSection: React.FC<EquipmentSectionProps> = ({
   scannedId,
+  selectedId,
+  onSelectEquipment,
   onNavigateToDosageForm
 }) => {
-  const [activeId, setActiveId] = useState<EquipmentId>(scannedId || 'digital-mini-incubator');
+  const [activeId, setActiveId] = useState<EquipmentId>(
+    selectedId || scannedId || 'digital-mini-incubator'
+  );
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('ALL');
   const [qrDataUrl, setQrDataUrl] = useState<string>('');
@@ -43,7 +54,19 @@ export const EquipmentSection: React.FC<EquipmentSectionProps> = ({
   const [photoModalOpen, setPhotoModalOpen] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
-  // Update active item if scannedId changes
+  const dossierRef = useRef<HTMLDivElement | null>(null);
+  const lastScrolledRef = useRef<EquipmentId | null>(null);
+  // Instrument shown on the very first render; nothing scrolls while it is selected.
+  const initialIdRef = useRef<EquipmentId | null>(null);
+
+  // Update active item if the parent asks for a different instrument
+  useEffect(() => {
+    if (selectedId && EQUIPMENT_BY_ID[selectedId]) {
+      setActiveId(selectedId);
+    }
+  }, [selectedId]);
+
+  // Update active item if opened by scanning a machine QR code
   useEffect(() => {
     if (scannedId && EQUIPMENT_BY_ID[scannedId]) {
       setActiveId(scannedId);
@@ -52,8 +75,44 @@ export const EquipmentSection: React.FC<EquipmentSectionProps> = ({
 
   const currentItem: EquipmentGuide = EQUIPMENT_BY_ID[activeId] || EQUIPMENT_LIST[0];
 
-  // Generate QR code data URL whenever activeId changes
+  /**
+   * True only while showing the exact instrument this browser was opened with
+   * by scanning its QR sticker. In that mode the QR block is hidden — the person
+   * reading the page is the one who just scanned it.
+   */
+  const openedFromScan = Boolean(scannedId && scannedId === activeId);
+
+  if (initialIdRef.current === null) {
+    initialIdRef.current = activeId;
+  }
+
+  /**
+   * Bring the selected instrument's SOP into view instead of making the student
+   * scroll down to it (the index list sits above the dossier on phones).
+   *
+   * Scrolls only when an instrument was really chosen: the page was opened by
+   * scanning a machine QR code, or the selection changed from the initial one.
+   */
   useEffect(() => {
+    const selectionChanged = activeId !== initialIdRef.current;
+    if (!openedFromScan && !selectionChanged) return;
+
+    // Nothing to do if this panel is already the one in view.
+    if (lastScrolledRef.current === activeId) return;
+
+    // The guard is set when the scroll actually happens: React may re-run this
+    // effect for the same item (StrictMode / quick re-renders) and cancel the
+    // pending timer, which would otherwise swallow the very first scroll.
+    const timer = window.setTimeout(() => {
+      lastScrolledRef.current = activeId;
+      scrollInfoIntoView(dossierRef.current);
+    }, 60);
+    return () => window.clearTimeout(timer);
+  }, [activeId, openedFromScan]);
+
+  // Generate QR code data URL whenever activeId changes (not needed after a scan)
+  useEffect(() => {
+    if (openedFromScan) return;
     let cancelled = false;
     generateEquipmentQrDataUrl(currentItem.id).then((url) => {
       if (!cancelled) setQrDataUrl(url);
@@ -61,7 +120,7 @@ export const EquipmentSection: React.FC<EquipmentSectionProps> = ({
     return () => {
       cancelled = true;
     };
-  }, [currentItem.id]);
+  }, [currentItem.id, openedFromScan]);
 
   // Categories for filter
   const categories = ['ALL', ...Array.from(new Set(EQUIPMENT_LIST.map((e) => e.category)))];
@@ -86,6 +145,7 @@ export const EquipmentSection: React.FC<EquipmentSectionProps> = ({
 
   const handleSelectEquipment = (id: EquipmentId) => {
     setActiveId(id);
+    onSelectEquipment?.(id);
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href);
       url.searchParams.delete('form');
@@ -93,6 +153,8 @@ export const EquipmentSection: React.FC<EquipmentSectionProps> = ({
       url.searchParams.set('tab', 'equipment');
       window.history.replaceState(null, '', url.href);
     }
+    // Jump straight to the SOP of the tapped instrument.
+    window.setTimeout(() => scrollInfoIntoView(dossierRef.current), 60);
   };
 
   const handleCopyLink = () => {
@@ -153,7 +215,7 @@ export const EquipmentSection: React.FC<EquipmentSectionProps> = ({
             </div>
             <div>
               <p className="text-xs font-bold uppercase tracking-wider text-green-800">
-                Opened via Permanent Equipment QR Code
+                Opened via Permanent Equipment QR Code · Info only
               </p>
               <h4 className="text-sm sm:text-base font-black text-black">
                 {currentItem.name} · Standard Operating Procedure
@@ -169,7 +231,7 @@ export const EquipmentSection: React.FC<EquipmentSectionProps> = ({
       {/* Main Grid: Left Navigation + Right Detail Dossier */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Equipment Index & Filter */}
-        <div className="lg:col-span-4 bg-white border border-gray-200 rounded-2xl p-4 shadow-xs space-y-3">
+        <div className="lg:col-span-4 bg-white border border-gray-200 rounded-2xl p-4 shadow-xs space-y-3 lg:sticky lg:top-28">
           <div className="flex items-center justify-between px-1">
             <span className="text-xs font-black uppercase tracking-wider text-gray-700 flex items-center gap-1.5">
               <Sliders className="w-3.5 h-3.5 text-green-700" />
@@ -271,7 +333,7 @@ export const EquipmentSection: React.FC<EquipmentSectionProps> = ({
         </div>
 
         {/* Right Column: Full Academic Dossier & QR Card */}
-        <div className="lg:col-span-8">
+        <div id="equipment-dossier" ref={dossierRef} className="lg:col-span-8 scroll-mt-28">
           <article className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-xs">
             {/* Equipment Header Strip */}
             <header className="border-b-2 border-green-600 p-5 sm:p-6 bg-white">
@@ -311,10 +373,12 @@ export const EquipmentSection: React.FC<EquipmentSectionProps> = ({
             </header>
 
             <div className="p-5 sm:p-6 space-y-6 text-sm text-gray-800">
-              {/* Media Block: Photo + Permanent QR Side-by-Side */}
+              {/* Media Block: Photo (+ permanent QR only when browsing, never after a scan) */}
               <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch">
                 {/* Equipment Photo */}
-                <div className="md:col-span-6 flex flex-col">
+                <div
+                  className={`flex flex-col ${openedFromScan ? 'md:col-span-12' : 'md:col-span-6'}`}
+                >
                   <div className="relative group rounded-xl overflow-hidden border border-gray-200 bg-gray-50 flex-1 min-h-[220px]">
                     <img
                       src={currentItem.image}
@@ -336,91 +400,94 @@ export const EquipmentSection: React.FC<EquipmentSectionProps> = ({
                   </p>
                 </div>
 
-                {/* Permanent QR Code Box */}
-                <div className="md:col-span-6 bg-gradient-to-br from-green-50 to-emerald-50/70 border border-green-200 rounded-xl p-4 flex flex-col justify-between">
-                  <div className="flex items-start gap-4">
-                    {/* The QR Code Image */}
-                    <div className="bg-white p-2 border-2 border-green-700 rounded-xl shadow-xs shrink-0 text-center">
-                      {qrDataUrl ? (
-                        <img
-                          src={qrDataUrl}
-                          alt={`Permanent QR for ${currentItem.name}`}
-                          className="w-28 h-28 sm:w-32 sm:h-32 object-contain"
-                        />
-                      ) : (
-                        <div className="w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center text-xs text-gray-400">
-                          Generating…
+                {/* Permanent QR Code Box — hidden when this page was opened by
+                    scanning the machine's own QR code (info/SOP only). */}
+                {!openedFromScan && (
+                  <div className="md:col-span-6 bg-gradient-to-br from-green-50 to-emerald-50/70 border border-green-200 rounded-xl p-4 flex flex-col justify-between">
+                    <div className="flex items-start gap-4">
+                      {/* The QR Code Image */}
+                      <div className="bg-white p-2 border-2 border-green-700 rounded-xl shadow-xs shrink-0 text-center">
+                        {qrDataUrl ? (
+                          <img
+                            src={qrDataUrl}
+                            alt={`Permanent QR for ${currentItem.name}`}
+                            className="w-28 h-28 sm:w-32 sm:h-32 object-contain"
+                          />
+                        ) : (
+                          <div className="w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center text-xs text-gray-400">
+                            Generating…
+                          </div>
+                        )}
+                        <span className="block text-[8px] font-black uppercase text-green-900 tracking-wider mt-1">
+                          PERMANENT QR
+                        </span>
+                      </div>
+
+                      {/* QR Details */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <QrCode className="w-4 h-4 text-green-700 shrink-0" />
+                          <h4 className="text-xs font-black uppercase tracking-wider text-green-900">
+                            Permanent QR Link
+                          </h4>
                         </div>
-                      )}
-                      <span className="block text-[8px] font-black uppercase text-green-900 tracking-wider mt-1">
-                        PERMANENT QR
-                      </span>
+                        <p className="text-xs text-gray-700 mt-1 leading-snug">
+                          Affix this QR code to the laboratory instrument. Scanning opens this operating guide instantly on any smartphone.
+                        </p>
+
+                        <div className="mt-2.5 p-1.5 bg-white border border-green-200 rounded-lg flex items-center justify-between gap-1 text-[11px] font-mono text-gray-700">
+                          <span className="truncate">{buildPermanentEquipmentUrl(currentItem.id)}</span>
+                          <button
+                            type="button"
+                            onClick={handleCopyLink}
+                            className="p-1 text-gray-500 hover:text-green-700 transition-colors cursor-pointer shrink-0"
+                            title="Copy permanent URL"
+                          >
+                            {copiedLink ? (
+                              <Check className="w-3.5 h-3.5 text-green-600" />
+                            ) : (
+                              <Copy className="w-3.5 h-3.5" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
-                    {/* QR Details */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <QrCode className="w-4 h-4 text-green-700 shrink-0" />
-                        <h4 className="text-xs font-black uppercase tracking-wider text-green-900">
-                          Permanent QR Link
-                        </h4>
-                      </div>
-                      <p className="text-xs text-gray-700 mt-1 leading-snug">
-                        Affix this QR code to the laboratory instrument. Scanning opens this operating guide instantly on any smartphone.
-                      </p>
-
-                      <div className="mt-2.5 p-1.5 bg-white border border-green-200 rounded-lg flex items-center justify-between gap-1 text-[11px] font-mono text-gray-700">
-                        <span className="truncate">{buildPermanentEquipmentUrl(currentItem.id)}</span>
+                    {/* QR Download & Sticker Actions */}
+                    <div className="mt-3.5 pt-3 border-t border-green-200 flex flex-wrap items-center gap-2">
+                      {qrDataUrl && (
                         <button
                           type="button"
-                          onClick={handleCopyLink}
-                          className="p-1 text-gray-500 hover:text-green-700 transition-colors cursor-pointer shrink-0"
-                          title="Copy permanent URL"
+                          onClick={() =>
+                            downloadQrImage(qrDataUrl, `pharmaqr-${currentItem.id}.png`)
+                          }
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-green-700 hover:bg-green-800 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer"
                         >
-                          {copiedLink ? (
-                            <Check className="w-3.5 h-3.5 text-green-600" />
-                          ) : (
-                            <Copy className="w-3.5 h-3.5" />
-                          )}
+                          <Download className="w-3.5 h-3.5" />
+                          <span>Download PNG</span>
                         </button>
-                      </div>
-                    </div>
-                  </div>
+                      )}
 
-                  {/* QR Download & Sticker Actions */}
-                  <div className="mt-3.5 pt-3 border-t border-green-200 flex flex-wrap items-center gap-2">
-                    {qrDataUrl && (
-                      <button
-                        type="button"
-                        onClick={() =>
-                          downloadQrImage(qrDataUrl, `pharmaqr-${currentItem.id}.png`)
-                        }
-                        className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-green-700 hover:bg-green-800 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                      <a
+                        href={`/qr/${currentItem.id}.svg`}
+                        download={`${currentItem.id}.svg`}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-white hover:bg-gray-100 text-gray-800 border border-gray-300 rounded-lg text-xs font-bold transition-colors cursor-pointer"
                       >
                         <Download className="w-3.5 h-3.5" />
-                        <span>Download PNG</span>
+                        <span>SVG</span>
+                      </a>
+
+                      <button
+                        type="button"
+                        onClick={() => setStickerModalOpen(true)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-white hover:bg-gray-100 text-green-900 border border-green-300 rounded-lg text-xs font-bold transition-colors cursor-pointer ml-auto"
+                      >
+                        <Printer className="w-3.5 h-3.5 text-green-700" />
+                        <span>Sticker Preview</span>
                       </button>
-                    )}
-
-                    <a
-                      href={`/qr/${currentItem.id}.svg`}
-                      download={`${currentItem.id}.svg`}
-                      className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-white hover:bg-gray-100 text-gray-800 border border-gray-300 rounded-lg text-xs font-bold transition-colors cursor-pointer"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                      <span>SVG</span>
-                    </a>
-
-                    <button
-                      type="button"
-                      onClick={() => setStickerModalOpen(true)}
-                      className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-white hover:bg-gray-100 text-green-900 border border-green-300 rounded-lg text-xs font-bold transition-colors cursor-pointer ml-auto"
-                    >
-                      <Printer className="w-3.5 h-3.5 text-green-700" />
-                      <span>Sticker Preview</span>
-                    </button>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               {/* Section 1: Working Principle */}

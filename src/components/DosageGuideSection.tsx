@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { DosageFormCategory } from '../types/pharmacy';
 import { DOSAGE_FORM_LIST, PHARMACY_DOSSIERS } from '../data/dosageFormsData';
 import { DossierCard } from './DossierCard';
 import { ScanIntroSplash } from './ScanIntroSplash';
-import { getFormFromUrl } from '../utils/pharmaQrEncoder';
 import { EquipmentId } from '../data/equipmentData';
+import { scrollInfoIntoView } from '../utils/scrollToInfo';
 import {
   Search,
   Pill,
@@ -18,10 +18,21 @@ import {
 } from 'lucide-react';
 
 interface DosageGuideSectionProps {
+  /**
+   * The dosage form captured at page load when the browser was opened by
+   * scanning a physical PharmaQR code. `null` when the page was opened normally.
+   */
   scannedCategory?: DosageFormCategory | null;
-  onNavigateToEquipment?: (id: EquipmentId) => void;
+  /**
+   * Plays the full-screen "QR scanned" intro. Only ever true for a real QR scan —
+   * it is false when a student merely taps a dosage form inside the app.
+   */
+  showScanIntro?: boolean;
+  /** Called once the scanned intro has been shown so it never replays. */
+  onScanIntroDone?: () => void;
   selectedCategory?: DosageFormCategory;
   onSelectCategory?: (category: DosageFormCategory) => void;
+  onNavigateToEquipment?: (id: EquipmentId) => void;
 }
 
 const getIcon = (category: DosageFormCategory) => {
@@ -46,34 +57,71 @@ const getIcon = (category: DosageFormCategory) => {
 
 export const DosageGuideSection: React.FC<DosageGuideSectionProps> = ({
   scannedCategory,
-  onNavigateToEquipment,
+  showScanIntro = false,
+  onScanIntroDone,
   selectedCategory,
-  onSelectCategory
+  onSelectCategory,
+  onNavigateToEquipment
 }) => {
   const [internalCategory, setInternalCategory] = useState<DosageFormCategory>(
     scannedCategory || selectedCategory || 'TABLETS'
   );
   const [searchQuery, setSearchQuery] = useState('');
-  const [openedFromScan, setOpenedFromScan] = useState(Boolean(scannedCategory));
-  const [showSplash, setShowSplash] = useState(Boolean(scannedCategory));
+  const [splashVisible, setSplashVisible] = useState(Boolean(showScanIntro));
 
-  // Sync when prop changes
+  const dossierRef = useRef<HTMLDivElement | null>(null);
+  const lastScrolledRef = useRef<DosageFormCategory | null>(null);
+  // The dosage form shown on the very first render. Nothing scrolls while this
+  // one is still selected (a normal visit starts at the top of the page).
+  const initialCategoryRef = useRef<DosageFormCategory | null>(null);
+
+  // Sync when the parent changes the selected form (search, QR hub, cross-links)
   useEffect(() => {
     if (selectedCategory) {
       setInternalCategory(selectedCategory);
     }
   }, [selectedCategory]);
 
-  useEffect(() => {
-    if (scannedCategory) {
-      setInternalCategory(scannedCategory);
-      setOpenedFromScan(true);
-      setShowSplash(true);
-    }
-  }, [scannedCategory]);
-
   const activeCategory = selectedCategory || internalCategory;
   const currentDossier = PHARMACY_DOSSIERS[activeCategory] || PHARMACY_DOSSIERS['TABLETS'];
+
+  /**
+   * True only while showing the exact dosage form this browser was opened with
+   * by scanning its QR code. In that mode the QR block is hidden: there is no
+   * point showing the code to the person who just scanned it.
+   */
+  const openedFromScan = Boolean(scannedCategory && scannedCategory === activeCategory);
+
+  if (initialCategoryRef.current === null) {
+    initialCategoryRef.current = activeCategory;
+  }
+
+  /**
+   * Bring the tapped dosage form's info panel into view, so students never have
+   * to scroll down to it (the index list sits above the dossier on phones).
+   *
+   * Scrolls only when a form was really chosen: the page was opened by scanning
+   * a QR code, or the selection changed from the one shown on first render.
+   */
+  useEffect(() => {
+    // The intro splash covers the screen; scroll once it has been dismissed.
+    if (splashVisible) return;
+
+    const selectionChanged = activeCategory !== initialCategoryRef.current;
+    if (!openedFromScan && !selectionChanged) return;
+
+    // Nothing to do if this panel is already the one in view.
+    if (lastScrolledRef.current === activeCategory) return;
+
+    // The guard is set when the scroll actually happens: React may re-run this
+    // effect for the same item (StrictMode / quick re-renders) and cancel the
+    // pending timer, which would otherwise swallow the very first scroll.
+    const timer = window.setTimeout(() => {
+      lastScrolledRef.current = activeCategory;
+      scrollInfoIntoView(dossierRef.current);
+    }, 60);
+    return () => window.clearTimeout(timer);
+  }, [activeCategory, openedFromScan, splashVisible]);
 
   const filtered = DOSAGE_FORM_LIST.filter((cat) => {
     const q = searchQuery.toLowerCase().trim();
@@ -90,7 +138,8 @@ export const DosageGuideSection: React.FC<DosageGuideSectionProps> = ({
   const selectForm = (cat: DosageFormCategory) => {
     setInternalCategory(cat);
     onSelectCategory?.(cat);
-    setOpenedFromScan(false);
+    // Tapping a form is NOT a scan: never replay the intro splash.
+    setSplashVisible(false);
 
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href);
@@ -99,15 +148,24 @@ export const DosageGuideSection: React.FC<DosageGuideSectionProps> = ({
       url.searchParams.set('tab', 'dosage');
       window.history.replaceState(null, '', url.href);
     }
+
+    // Jump straight to the info panel of the tapped form.
+    window.setTimeout(() => scrollInfoIntoView(dossierRef.current), 60);
   };
 
-  // Scanned view splash
-  if (openedFromScan && showSplash) {
+  const dismissSplash = () => {
+    setSplashVisible(false);
+    onScanIntroDone?.();
+    // The scroll effect runs on the next render once the splash is gone.
+  };
+
+  // Full-screen "you just scanned a QR" intro — real scans only.
+  if (splashVisible) {
     return (
       <ScanIntroSplash
         formName={currentDossier.shortName}
         itemType="dosage"
-        onContinue={() => setShowSplash(false)}
+        onContinue={dismissSplash}
       />
     );
   }
@@ -118,7 +176,9 @@ export const DosageGuideSection: React.FC<DosageGuideSectionProps> = ({
       {openedFromScan && (
         <div className="bg-green-50 border-2 border-green-600 rounded-2xl p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <p className="text-xs sm:text-sm text-green-900">
-            You opened <span className="font-black text-black">{activeCategory}</span> by scanning its permanent PharmaQR code.
+            You opened <span className="font-black text-black">{activeCategory}</span> by scanning its
+            permanent PharmaQR code — showing the{' '}
+            <span className="font-bold">study information only</span>.
           </p>
           <button
             onClick={() => selectForm('TABLETS')}
@@ -156,13 +216,13 @@ export const DosageGuideSection: React.FC<DosageGuideSectionProps> = ({
       {/* Browser layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Index List */}
-        <div className="lg:col-span-4 bg-white border border-gray-200 rounded-2xl p-4 shadow-xs">
+        <div className="lg:col-span-4 bg-white border border-gray-200 rounded-2xl p-4 shadow-xs lg:sticky lg:top-28">
           <div className="px-2 py-1 text-xs font-black uppercase tracking-wider text-gray-700 flex items-center justify-between border-b border-gray-100 pb-2">
             <span>Dosage Form Index</span>
             <span className="font-mono text-gray-500">{filtered.length}/12</span>
           </div>
 
-          <div className="space-y-1.5 mt-3 max-h-[75vh] overflow-y-auto pr-1">
+          <div className="space-y-1.5 mt-3 max-h-[75vh] overflow-y-auto pr-1 lg:max-h-[65vh]">
             {filtered.map((cat) => {
               const active = activeCategory === cat;
               const d = PHARMACY_DOSSIERS[cat];
@@ -209,10 +269,11 @@ export const DosageGuideSection: React.FC<DosageGuideSectionProps> = ({
         </div>
 
         {/* Detail Panel */}
-        <div className="lg:col-span-8">
+        <div id="dosage-dossier" ref={dossierRef} className="lg:col-span-8 scroll-mt-28">
           <DossierCard
             dossier={currentDossier}
             highlightScanned={openedFromScan}
+            showQr={!openedFromScan}
             onNavigateToEquipment={onNavigateToEquipment}
           />
         </div>
