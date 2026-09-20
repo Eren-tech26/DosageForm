@@ -63,3 +63,33 @@ export interface ScannedRecord {
   isStructuredPharma: boolean;
   data: ProductFormData;
 }
+
+// --- Equipment Types ---
+export type EquipmentId =
+  | 'digital-mini-incubator'
+  | 'hot-air-oven'
+  | 'tablet-friability-machine'
+  | 'ir-spectrophotometer'
+  | 'cyclone-separator'
+  | 'quartz-muffle-tray';
+
+export interface EquipmentDossier {
+  id: EquipmentId;
+  shortName: string;
+  fullName: string;
+  categoryTag: string;
+  image: string;
+  imageCaption: string;
+  definition: string;
+  workingPrinciple: string;
+  construction: string[];
+  specifications: [string, string][];
+  pharmacyApplications: string[];
+  advantages: string[];
+  limitations: string[];
+  operatingProcedure: string[];
+  qualityTests: string[];
+  safetyPrecautions: string[];
+  exampleModels: { model: string; manufacturer: string; notes: string }[];
+  sources?: { label: string; url: string }[];
+}
