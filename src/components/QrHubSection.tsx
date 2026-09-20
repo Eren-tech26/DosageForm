@@ -44,7 +44,7 @@ export const QrHubSection: React.FC<QrHubSectionProps> = ({
 
   // Combine both lists into a unified QR directory
   const allItems: QrItem[] = [
-    // 6 Equipment
+    // 7 Equipment
     ...EQUIPMENT_LIST.map((eq) => ({
       type: 'equipment' as const,
       id: eq.id,
@@ -131,7 +131,7 @@ export const QrHubSection: React.FC<QrHubSectionProps> = ({
               Permanent QR Hub
             </span>
             <span className="text-xs text-gray-500 font-semibold">
-              18 Verifiable Fixed Codes
+              19 Verifiable Fixed Codes
             </span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black text-black mt-2">
@@ -165,7 +165,7 @@ export const QrHubSection: React.FC<QrHubSectionProps> = ({
                 : 'text-gray-600 hover:text-black'
             }`}
           >
-            All Codes (18)
+            All Codes (19)
           </button>
           <button
             onClick={() => setFilterType('EQUIPMENT')}
@@ -176,7 +176,7 @@ export const QrHubSection: React.FC<QrHubSectionProps> = ({
             }`}
           >
             <Wrench className="w-3.5 h-3.5 text-green-700" />
-            Equipment (6)
+            Equipment (7)
           </button>
           <button
             onClick={() => setFilterType('DOSAGE')}

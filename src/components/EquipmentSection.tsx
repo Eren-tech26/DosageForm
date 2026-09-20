@@ -172,7 +172,7 @@ export const EquipmentSection: React.FC<EquipmentSectionProps> = ({
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-700 text-white text-xs font-bold uppercase tracking-wider">
               <Wrench className="w-3.5 h-3.5" />
-              6 Lab Instruments
+              7 Lab Instruments
             </span>
             <span className="text-xs text-gray-500 font-semibold">
               Permanent QR SOP System
@@ -238,7 +238,7 @@ export const EquipmentSection: React.FC<EquipmentSectionProps> = ({
               Instruments Index
             </span>
             <span className="text-xs font-mono font-bold text-gray-500">
-              {filteredList.length}/6
+              {filteredList.length}/7
             </span>
           </div>
 

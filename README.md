@@ -1,6 +1,6 @@
 # PharmaQR — Pharmaceutical Dosage Forms & Lab Equipment Portal
 
-A comprehensive digital study and laboratory reference system for pharmacy students and instructors, featuring **12 pharmaceutical dosage forms** and **6 core pharmacy laboratory instruments**, complete with permanent QR codes, standard operating procedures (SOPs), academic dossiers, and printable equipment stickers.
+A comprehensive digital study and laboratory reference system for pharmacy students and instructors, featuring **12 pharmaceutical dosage forms** and **7 core pharmacy laboratory instruments**, complete with permanent QR codes, standard operating procedures (SOPs), academic dossiers, and printable equipment stickers.
 
 ## Key Features
 
@@ -18,6 +18,7 @@ A comprehensive digital study and laboratory reference system for pharmacy stude
   4. **FTIR Spectrophotometer** (`ir-spectrophotometer`) — Infrared molecular fingerprinting and API identification (USP <197>).
   5. **Cyclone Separator** (`cyclone-separator`) — Centrifugal gas-solid powder separation and collection.
   6. **Quartz Muffle Tray** (`quartz-muffle-tray`) — Ultra-pure fused quartz crucible boat for ash and residue-on-ignition tests.
+  7. **Digital pH Meter** (`ph-meter`) — Precision electrochemical pH measurement for pharmaceutical formulations and purified water.
 - **Each Equipment Dossier Includes**:
   - Authentic high-resolution pharmacy laboratory photos.
   - Working principle and physical mechanism.
@@ -31,12 +32,12 @@ A comprehensive digital study and laboratory reference system for pharmacy stude
 - **Center Logo QR Generation**: Level 'H' error-corrected QR codes featuring the PharmaQR emblem in the center.
 - **Lab Sticker Generator**:
   - Single sticker preview formatted as an official lab machine label (with SVERI COBP header, asset tag, SOP brief, safety cautions, and QR code).
-  - Multi-sticker sheet mode: prints all 6 laboratory stickers in an A4 grid, ready to cut and affix to laboratory machines.
+  - Multi-sticker sheet mode: prints all 7 laboratory stickers in an A4 grid, ready to cut and affix to laboratory machines.
   - Export to high-res PNG (1200x1200px) and vector SVG.
 
 ### 4. Unified, Organised Portal Architecture
-- Tab navigation between **Dosage Forms (12)**, **Lab Equipment (6)**, and **QR Hub & Labels (18)**.
-- Global search across all 18 formulations and machines.
+- Tab navigation between **Dosage Forms (12)**, **Lab Equipment (7)**, and **QR Hub & Labels (19)**.
+- Global search across all 19 formulations and machines.
 - Deep linking support (`?form=...`, `?equipment=...`, `?tab=...`).
 - Printable styles that hide UI elements when generating physical stickers or study sheets.
 

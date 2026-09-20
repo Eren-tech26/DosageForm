@@ -187,7 +187,7 @@ export function App() {
                 }`}
               >
                 <Wrench className="w-4 h-4" />
-                <span>Lab Equipment (6)</span>
+                <span>Lab Equipment (7)</span>
               </button>
 
               <button
@@ -356,8 +356,8 @@ export function App() {
                   {activeTab === 'dosage'
                     ? '12 Dosage Forms'
                     : activeTab === 'equipment'
-                    ? '6 Lab Instruments'
-                    : '18 Permanent QR Codes'}
+                    ? '7 Lab Instruments'
+                    : '19 Permanent QR Codes'}
                 </span>
                 <span className="text-xs text-gray-500 font-medium">
                   B. Pharm Syllabi Study Guide
@@ -376,7 +376,7 @@ export function App() {
                 {activeTab === 'equipment' &&
                   'Operating procedures, principles, technical specifications, safety precautions, and permanent lab machine QR stickers for B. Pharm practicals.'}
                 {activeTab === 'qr-hub' &&
-                  'Permanent QR codes for all 12 dosage forms and 6 laboratory instruments. Ready to download in high-res PNG/SVG or print as adhesive lab machine stickers.'}
+                  'Permanent QR codes for all 12 dosage forms and 7 laboratory instruments. Ready to download in high-res PNG/SVG or print as adhesive lab machine stickers.'}
               </p>
             </div>
           </div>
@@ -474,7 +474,7 @@ export function App() {
                 onClick={() => switchTab('equipment')}
                 className="hover:text-green-800 cursor-pointer"
               >
-                6 Lab Instruments
+                7 Lab Instruments
               </button>
               <span>·</span>
               <button
