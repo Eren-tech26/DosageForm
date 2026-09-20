@@ -2,12 +2,15 @@ import { DosageGuideSection } from './components/DosageGuideSection';
 import { DeveloperInfoCard } from './components/DeveloperInfoCard';
 import { getFormFromUrl } from './utils/pharmaQrEncoder';
 import { DEVELOPER_INFO } from './data/developerInfo';
+import { MiniIncubatorGuide } from './components/MiniIncubatorGuide';
+import { getEquipmentFromUrl } from './utils/equipmentQr';
 import { GraduationCap } from 'lucide-react';
 
 export function App() {
   // If the page was opened by scanning a form QR (?form=...), skip the intro banner
   // and let the guide render that form's information immediately (after the splash).
-  const scannedForm = getFormFromUrl();
+  const scannedEquipment = getEquipmentFromUrl();
+  const scannedForm = scannedEquipment ? null : getFormFromUrl();
 
   return (
     <div className="min-h-screen bg-gray-50 text-black flex flex-col font-sans">
@@ -34,7 +37,7 @@ export function App() {
 
       {/* Body */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {!scannedForm && (
+        {!scannedForm && !scannedEquipment && (
           <div className="mb-6 bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="w-11 h-11 rounded-xl bg-green-600 flex items-center justify-center text-white shrink-0">
               <GraduationCap className="w-6 h-6" />
@@ -52,7 +55,7 @@ export function App() {
         )}
 
         <div className="space-y-6">
-          <DosageGuideSection />
+          {scannedEquipment ? <MiniIncubatorGuide /> : <DosageGuideSection />}
 
           {/* Developer credit */}
           <DeveloperInfoCard />
