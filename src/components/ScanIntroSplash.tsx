@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { QrCode, Pill, ArrowRight } from 'lucide-react';
+import { QrCode, Pill, Wrench, ArrowRight } from 'lucide-react';
 
 interface ScanIntroSplashProps {
   formName: string;
+  itemType?: 'dosage' | 'equipment';
   onContinue: () => void;
   /** Auto-advance duration in ms. Default 2200. */
   autoAdvanceMs?: number;
@@ -10,11 +11,12 @@ interface ScanIntroSplashProps {
 
 /**
  * Full-screen white intro shown immediately after a QR code is scanned.
- * Displays the PharmaQR logo/brand on a clean white background, then
- * transitions into the dosage form information.
+ * Displays the SVERI COBP emblem and PharmaQR branding on a clean white background,
+ * then transitions smoothly into the selected guide.
  */
 export const ScanIntroSplash: React.FC<ScanIntroSplashProps> = ({
   formName,
+  itemType = 'dosage',
   onContinue,
   autoAdvanceMs = 2200
 }) => {
@@ -61,29 +63,33 @@ export const ScanIntroSplash: React.FC<ScanIntroSplashProps> = ({
           />
           <img
             src="/images/sveri-cobp.png"
-            alt="SVERI CO&amp;P"
-            className="relative w-52 h-52 sm:w-64 sm:h-64 object-contain drop-shadow-xl"
+            alt="SVERI COBP"
+            className="relative w-48 h-48 sm:w-56 sm:h-56 object-contain drop-shadow-xl"
           />
         </div>
 
-        <h1 className="mt-6 text-3xl sm:text-5xl font-black tracking-tight text-black text-center">
+        <h1 className="mt-5 text-3xl sm:text-5xl font-black tracking-tight text-black text-center">
           Pharma<span className="text-green-600">QR</span>
         </h1>
-        <p className="mt-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.25em] text-green-700">
-          Pharmaceutical Dosage Guide
+        <p className="mt-1 text-xs sm:text-sm font-semibold uppercase tracking-[0.25em] text-green-700">
+          {itemType === 'equipment' ? 'Laboratory Equipment SOP Guide' : 'Pharmaceutical Dosage Guide'}
         </p>
 
         {/* Loading/scanned indicator */}
-        <div className="mt-8 flex items-center gap-3 bg-green-50 border border-green-200 rounded-full px-5 py-2.5">
+        <div className="mt-6 flex items-center gap-3 bg-green-50 border border-green-200 rounded-full px-5 py-2.5">
           <QrCode className="w-4 h-4 text-green-700" />
-          <Pill className="w-4 h-4 text-green-700" />
-          <span className="text-sm font-bold text-green-900">
-            Loading <span className="text-black">{formName}</span>…
+          {itemType === 'equipment' ? (
+            <Wrench className="w-4 h-4 text-green-700" />
+          ) : (
+            <Pill className="w-4 h-4 text-green-700" />
+          )}
+          <span className="text-xs sm:text-sm font-bold text-green-900">
+            Opening <span className="text-black font-black">{formName}</span>…
           </span>
         </div>
 
         {/* Progress bar */}
-        <div className="mt-6 w-56 sm:w-64 h-1 bg-gray-100 rounded-full overflow-hidden">
+        <div className="mt-5 w-56 sm:w-64 h-1 bg-gray-100 rounded-full overflow-hidden">
           <div
             className="h-full bg-gradient-to-r from-green-500 to-green-700 rounded-full origin-left"
             style={{

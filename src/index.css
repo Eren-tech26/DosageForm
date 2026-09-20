@@ -21,6 +21,18 @@
 
 @media print {
   @page {
-    margin: 12mm;
+    margin: 8mm;
+    size: auto;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .print\:hidden {
+    display: none !important;
   }
 }

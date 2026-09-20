@@ -20,8 +20,8 @@ export const PHARMACY_DOSSIERS: Record<DosageFormCategory, PharmacyDossier> = {
     category: 'TABLETS',
     shortName: 'Tablets',
     categoryTag: 'Solid Oral Unit Dosage Form',
-    image: 'https://images.pexels.com/photos/51929/medications-cure-tablets-pharmacy-51929.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
-    imageCaption: 'Compressed pharmaceutical tablets in blister packaging with imprinted identification markings.',
+    image: '/images/dosage-forms/tablets.jpg',
+    imageCaption: 'Compressed pharmaceutical tablets in blister packaging with light-resistant protective cavities.',
     definition: 'Tablets are solid pharmaceutical dosage forms containing drug substances with or without suitable diluents, prepared either by compression or molding methods as per USP/BP monographs.',
     classification: [
       'Compressed Tablets (Standard oral)',
@@ -96,8 +96,8 @@ export const PHARMACY_DOSSIERS: Record<DosageFormCategory, PharmacyDossier> = {
     category: 'CAPSULES',
     shortName: 'Capsules',
     categoryTag: 'Enclosed Solid Unit Dosage Form',
-    image: 'https://images.pexels.com/photos/3652097/pexels-photo-3652097.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
-    imageCaption: 'Two-piece hard gelatin and vegetarian HPMC capsules with color-coded body and cap.',
+    image: '/images/dosage-forms/capsules.webp',
+    imageCaption: 'Two-piece hard gelatin capsules with color-coded body and cap containing active pharmaceutical powder.',
     definition: 'Capsules are solid dosage forms in which one or more medicinal and inert substances are enclosed within a small soluble shell, usually composed of gelatin or vegetable polymers like hydroxypropyl methylcellulose (HPMC).',
     classification: [
       'Hard Gelatin Capsules (Two-piece: Cap and Body)',
