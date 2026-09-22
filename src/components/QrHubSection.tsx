@@ -14,7 +14,7 @@ import { EQUIPMENT_LIST, EquipmentId } from '../data/equipmentData';
 import { DOSAGE_FORM_LIST, PHARMACY_DOSSIERS } from '../data/dosageFormsData';
 import { DosageFormCategory } from '../types/pharmacy';
 import { generateEquipmentQrDataUrl, downloadQrImage, buildPermanentEquipmentUrl } from '../utils/equipmentQr';
-import { buildFormUrl, generateQrDataUrl } from '../utils/pharmaQrEncoder';
+import { buildFormUrl, formQrSvgPath, generateQrDataUrl } from '../utils/pharmaQrEncoder';
 import { EquipmentStickerModal } from './EquipmentStickerModal';
 
 interface QrHubSectionProps {
@@ -54,7 +54,7 @@ export const QrHubSection: React.FC<QrHubSectionProps> = ({
       tag: eq.assetTag,
       svgPath: `/qr/${eq.id}.svg`
     })),
-    // 12 Dosage Forms
+    // Dosage Forms (19)
     ...DOSAGE_FORM_LIST.map((form) => {
       const d = PHARMACY_DOSSIERS[form];
       return {
@@ -63,7 +63,8 @@ export const QrHubSection: React.FC<QrHubSectionProps> = ({
         title: form,
         category: d.categoryTag,
         url: buildFormUrl(form),
-        tag: 'DOSAGE FORM'
+        tag: 'DOSAGE FORM',
+        svgPath: formQrSvgPath(form)
       };
     })
   ];
@@ -131,7 +132,7 @@ export const QrHubSection: React.FC<QrHubSectionProps> = ({
               Permanent QR Hub
             </span>
             <span className="text-xs text-gray-500 font-semibold">
-              19 Verifiable Fixed Codes
+              {EQUIPMENT_LIST.length + DOSAGE_FORM_LIST.length} Verifiable Fixed Codes
             </span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black text-black mt-2">
@@ -165,7 +166,7 @@ export const QrHubSection: React.FC<QrHubSectionProps> = ({
                 : 'text-gray-600 hover:text-black'
             }`}
           >
-            All Codes (19)
+            All Codes ({EQUIPMENT_LIST.length + DOSAGE_FORM_LIST.length})
           </button>
           <button
             onClick={() => setFilterType('EQUIPMENT')}
@@ -187,7 +188,7 @@ export const QrHubSection: React.FC<QrHubSectionProps> = ({
             }`}
           >
             <Pill className="w-3.5 h-3.5 text-green-700" />
-            Dosage Forms (12)
+            Dosage Forms ({DOSAGE_FORM_LIST.length})
           </button>
         </div>
 

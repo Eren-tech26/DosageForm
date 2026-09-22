@@ -10,7 +10,14 @@ export type DosageFormCategory =
   | 'INHALATION PRODUCTS'
   | 'SPECIAL DOSAGE FORMS'
   | 'SUPPOSITORIES'
-  | 'PARENTERALS & MISC.';
+  | 'PARENTERALS & MISC.'
+  | 'PASTES'
+  | 'SOLUTIONS'
+  | 'SUSPENSIONS'
+  | 'GARGLES'
+  | 'MOUTHWASH'
+  | 'POWDERS'
+  | 'NASAL DROPS';
 
 export interface ProductFormData {
   dosageForm: DosageFormCategory;

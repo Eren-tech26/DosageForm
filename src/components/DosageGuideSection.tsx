@@ -13,6 +13,13 @@ import {
   Wind,
   Layers,
   Droplet,
+  Droplets,
+  Beaker,
+  FlaskConical,
+  GlassWater,
+  CupSoda,
+  Package,
+  Brush,
   ChevronRight,
   LayoutGrid
 } from 'lucide-react';
@@ -50,6 +57,20 @@ const getIcon = (category: DosageFormCategory) => {
     case 'SYRUPS':
     case 'LIQUID DOSAGE FORMS':
       return <Droplet className="w-4 h-4" />;
+    case 'NASAL DROPS':
+      return <Droplets className="w-4 h-4" />;
+    case 'SOLUTIONS':
+      return <Beaker className="w-4 h-4" />;
+    case 'SUSPENSIONS':
+      return <FlaskConical className="w-4 h-4" />;
+    case 'GARGLES':
+      return <GlassWater className="w-4 h-4" />;
+    case 'MOUTHWASH':
+      return <CupSoda className="w-4 h-4" />;
+    case 'POWDERS':
+      return <Package className="w-4 h-4" />;
+    case 'PASTES':
+      return <Brush className="w-4 h-4" />;
     default:
       return <Layers className="w-4 h-4" />;
   }
@@ -185,7 +206,7 @@ export const DosageGuideSection: React.FC<DosageGuideSectionProps> = ({
             className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 bg-green-700 hover:bg-green-800 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer shrink-0"
           >
             <LayoutGrid className="w-3.5 h-3.5" />
-            Browse All 12 Dosage Forms
+            Browse All {DOSAGE_FORM_LIST.length} Dosage Forms
           </button>
         </div>
       )}
@@ -194,7 +215,7 @@ export const DosageGuideSection: React.FC<DosageGuideSectionProps> = ({
       <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-700 text-white text-xs font-bold uppercase tracking-wider">
-            All 12 Dosage Forms
+            All {DOSAGE_FORM_LIST.length} Dosage Forms
           </span>
           <p className="text-xs text-gray-600 mt-1.5">
             Select a dosage form from the index, or scan its fixed QR code to open its academic dossier.
@@ -219,7 +240,7 @@ export const DosageGuideSection: React.FC<DosageGuideSectionProps> = ({
         <div className="lg:col-span-4 bg-white border border-gray-200 rounded-2xl p-4 shadow-xs lg:sticky lg:top-28">
           <div className="px-2 py-1 text-xs font-black uppercase tracking-wider text-gray-700 flex items-center justify-between border-b border-gray-100 pb-2">
             <span>Dosage Form Index</span>
-            <span className="font-mono text-gray-500">{filtered.length}/12</span>
+            <span className="font-mono text-gray-500">{filtered.length}/{DOSAGE_FORM_LIST.length}</span>
           </div>
 
           <div className="space-y-1.5 mt-3 max-h-[75vh] overflow-y-auto pr-1 lg:max-h-[65vh]">

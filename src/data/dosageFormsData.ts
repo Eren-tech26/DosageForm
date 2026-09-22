@@ -13,6 +13,13 @@ export const DOSAGE_FORM_LIST: DosageFormCategory[] = [
   'SPECIAL DOSAGE FORMS',
   'SUPPOSITORIES',
   'PARENTERALS & MISC.',
+  'PASTES',
+  'SOLUTIONS',
+  'SUSPENSIONS',
+  'GARGLES',
+  'MOUTHWASH',
+  'POWDERS',
+  'NASAL DROPS',
 ];
 
 export const PHARMACY_DOSSIERS: Record<DosageFormCategory, PharmacyDossier> = {
@@ -899,6 +906,556 @@ export const PHARMACY_DOSSIERS: Record<DosageFormCategory, PharmacyDossier> = {
         rxType: 'Hospital Use Only',
         warnings: 'Isotonic in container, but acts as hypotonic free water once dextrose is metabolized. Monitor blood glucose.',
         manufacturer: 'Apex Parenterals Ltd'
+      }
+    ]
+  },
+
+  PASTES: {
+    category: 'PASTES',
+    shortName: 'Pastes',
+    categoryTag: 'Stiff Semisolid High-Solid Dermatological Form',
+    image: '/images/dosage-forms/pastes.jpg',
+    imageCaption: 'Thick white zinc oxide pharmaceutical paste in a wide-mouth amber jar being lifted with a compounding spatula next to a collapsible tube.',
+    definition: 'Pastes are stiff, semisolid preparations containing a high proportion (typically 20–50%) of finely powdered solid ingredients dispersed in a fatty base (e.g., white petrolatum) or an aqueous mucilaginous base. Intended for external application to skin or mucous membranes, they firm up on standing and form a tenacious protective layer that does not soften appreciably at body temperature.',
+    classification: [
+      'Fatty / Oleaginous Pastes (Zinc Oxide Paste BP, Lassar\'s Paste)',
+      'Aqueous Pastes / Gel Pastes (Glycerin and mucilage-based pastes)',
+      'Dental Pastes / Dentifrices (Toothpaste with abrasives like hydrated silica)',
+      'Oral Mucosal Pastes (Corticosteroid dental pastes adhering to buccal mucosa)',
+      'Gelatin-Based Pastes (Unna\'s Boot paste bandages)'
+    ],
+    routesOfAdministration: ['Topical cutaneous', 'Oral mucosal (buccal / gingival)', 'Dental'],
+    commonExcipients: [
+      'Stiffening Powders: Zinc oxide, Starch, Titanium dioxide, Kaolin (up to 50% w/w)',
+      'Fatty Bases: White soft paraffin, Liquid paraffin, Wool fat (anhydrous lanolin)',
+      'Aqueous / Mucilage Pastes: Glycerol, Methylcellulose, Sodium carboxymethylcellulose, Tragacanth mucilage',
+      'Toothpaste Components: Abrasives (Calcium carbonate, Hydrated silica), Surfactant (Sodium lauryl sulfate), Humectant (Sorbitol 70%)',
+      'Preservatives: Benzoic acid, Parabens'
+    ],
+    keyAdvantages: [
+      'High solid content forms a stiff, opaque protective barrier over lesions, absorbing wound exudates and serous secretions',
+      'Adheres to moist, weeping areas where greasy ointments would slide off',
+      'Less greasy and less occlusive than ointments; lower risk of folliculitis and skin maceration',
+      'Ideal protective coating around wounds (peri-wound skin) and in diaper dermatitis'
+    ],
+    disadvantagesOrLimitations: [
+      'Stiff consistency is difficult to spread and painful to apply on inflamed skin',
+      'Not suited for hairy body areas — difficult application and removal',
+      'High powder fraction can overdry fissured or cracked skin',
+      'The gritty solid particles make the paste abrasive, so never rub onto broken skin'
+    ],
+    pharmaceuticalQualityTests: [
+      'Fineness of Dispersion / Particle Size (Hegman grind gauge / microscopy, grit-free)',
+      'Rheology & Extrudability (Yield value and tube extrusion force)',
+      'Uniformity of Drug Content in the stiff matrix',
+      'pH of aqueous pastes and dentifrices',
+      'Microbial Limit Testing (USP <61>)'
+    ],
+    studentDispensingTips: [
+      'Apply with a clean spatula in a thick layer and press gently — never rub a paste vigorously.',
+      'Affix auxiliary label: "FOR EXTERNAL USE ONLY"; for dental pastes add "DO NOT EAT OR DRINK FOR 30 MINUTES AFTER APPLICATION".',
+      'Remove residual paste at change of dressing using a vegetable oil-soaked cotton swab, never dry gauze.',
+      'Cap jars and tubes tightly immediately after use: pastes dry out and harden on exposure to air.'
+    ],
+    exampleProducts: [
+      {
+        productName: 'Zinc Oxide & Salicylic Acid Paste BP (Lassar\'s Paste)',
+        strength: 'Zinc Oxide 24% + Salicylic Acid 2% + Starch 24% w/w (100 g jar)',
+        route: 'Topical cutaneous application',
+        instructions: 'Apply a thick layer over the affected area once or twice daily, covering with a light dressing if needed.',
+        sideEffects: 'Mild stinging, local irritation; salicylate sensitivity (ringing in ears if used over very large areas).',
+        storage: 'Store below 25°C in a tightly closed wide-mouth container. Protect from moisture.',
+        batch: 'PST-2011-ZN',
+        expiry: '2027-06',
+        rxType: 'OTC',
+        warnings: 'FOR EXTERNAL USE ONLY. Do not apply to large broken skin areas in children (risk of salicylism).',
+        manufacturer: 'DermaSafe Pharmaceuticals'
+      },
+      {
+        productName: 'Triamcinolone Acetonide Dental Paste USP',
+        strength: '0.1% w/w (5 g tube)',
+        route: 'Oral mucosal (applied to mouth ulcers)',
+        instructions: 'Dab a small amount (about 0.5 cm) onto the mouth ulcer at bedtime and after meals; do not rub in.',
+        sideEffects: 'Local burning, oral candidiasis (thrush) with prolonged use, taste alteration.',
+        storage: 'Store at 20°C to 25°C. Keep tube tightly closed.',
+        batch: 'TAP-6620',
+        expiry: '2026-11',
+        rxType: 'Rx Only',
+        warnings: 'For application inside the mouth only. Do not use in untreated oral fungal, viral (herpes), or tuberculous infections.',
+        manufacturer: 'OroMed Therapeutics'
+      }
+    ]
+  },
+
+  SOLUTIONS: {
+    category: 'SOLUTIONS',
+    shortName: 'Solutions',
+    categoryTag: 'Monophasic Clear Liquid Dosage Form',
+    image: '/images/dosage-forms/solutions.jpg',
+    imageCaption: 'Crystal-clear monophasic oral solution in an amber pharmaceutical bottle beside a calibrated dosing cup of transparent liquid.',
+    definition: 'Solutions are clear, homogeneous, monophasic liquid preparations containing one or more chemical substances completely dissolved at the molecular level (< 1 nm) in a suitable solvent or a mixture of mutually miscible solvents. Because the drug is fully dissolved, no sediment forms, the liquid does not scatter light (no Tyndall effect), and the dose is perfectly uniform throughout the container.',
+    classification: [
+      'Oral Solutions (e.g., ORS solution, potassium chloride solution)',
+      'Aqueous Solutions (Aromatic waters, douches, enemas)',
+      'Non-Aqueous Solutions (Elixirs — hydroalcoholic; Spirits — alcoholic; Collodions — ether-based)',
+      'Isotonic Solutions (0.9% NaCl eye/nasal lavages)',
+      'Mouthwashes & Gargles (specialized oropharyngeal solutions)'
+    ],
+    routesOfAdministration: ['Oral', 'Topical (lotions, liniments)', 'Otic / Nasal', 'Rectal (enema, douche)', 'Parenteral (aqueous injections)'],
+    commonExcipients: [
+      'Primary Solvent: Purified Water IP (freshly boiled and cooled where specified)',
+      'Cosolvents: Ethanol USP, Glycerin, Propylene glycol, PEG 400 (for poorly soluble APIs)',
+      'Preservatives: Sodium benzoate (0.1%), Methyl/Propyl parabens, Benzalkonium chloride',
+      'Stabilizers: Antioxidants (Sodium metabisulfite, Ascorbic acid), Chelating agent (Disodium EDTA)',
+      'Organoleptics: Sweeteners (Sucrose, Sorbitol, Sodium saccharin), Flavors, Buffers (Citrate, Phosphate)'
+    ],
+    keyAdvantages: [
+      'Drug is already molecularly dissolved — the fastest GI absorption of any dosage form, no dissolution step needed',
+      'Absolute dose uniformity: every 1 mL contains exactly the same amount of drug',
+      'Easy to swallow for pediatric, geriatric, and dysphagic patients',
+      'Flexible, immediately adjustable dosing with a calibrated cup or syringe'
+    ],
+    disadvantagesOrLimitations: [
+      'Dissolved drugs are more prone to hydrolysis and oxidation — shorter shelf life than dry forms',
+      'Bitter or unpleasant tastes are fully exposed and need flavouring/sweetening',
+      'Bulky, heavy, fragile packaging; inconvenient for transport',
+      'Drugs that are insoluble or unstable in the vehicle simply cannot be formulated as solutions'
+    ],
+    pharmaceuticalQualityTests: [
+      'Clarity & Absence of Particulate Matter (visual inspection against black/white backgrounds)',
+      'pH Determination (electrometric pH meter)',
+      'Assay of Active Ingredient (HPLC / UV-Vis spectrophotometry / titration)',
+      'Specific Gravity & Density (pycnometer)',
+      'Microbial Enumeration & Preservative Content (USP <61>/<51>)'
+    ],
+    studentDispensingTips: [
+      'Always issue a calibrated measure — never a household teaspoon (3–9 mL variability error).',
+      'Label the strength unambiguously (e.g., % w/v or mg/mL) and add "DILUTE BEFORE USE" for concentrated solutions.',
+      'Use amber bottles for light-sensitive solutions; record the date of opening/discarding on the label.',
+      'For externally applied solutions (antiseptics, lotions) affix "FOR EXTERNAL USE ONLY — NOT TO BE TAKEN".'
+    ],
+    exampleProducts: [
+      {
+        productName: 'Oral Rehydration Salts Solution (WHO ORS)',
+        strength: 'NaCl 2.6 g + KCl 1.5 g + Sodium citrate 2.9 g + Dextrose 13.5 g per litre',
+        route: 'Oral (sipped frequently in small volumes)',
+        instructions: 'Dissolve entire contents in 1 litre of clean drinking water. Sip 50–100 mL after each loose stool. Discard unused solution after 24 hours.',
+        sideEffects: 'Rare: vomiting if gulped quickly; hypernatremia if insufficient water is used for dilution.',
+        storage: 'Store powder sachet below 30°C in a dry place. Use reconstituted solution within 24 hours.',
+        batch: 'ORS-7710-S',
+        expiry: '2027-05',
+        rxType: 'OTC',
+        warnings: 'Use exactly 1 litre of water per sachet — wrong dilution can worsen electrolyte imbalance. Continue normal feeding during therapy.',
+        manufacturer: 'HydraCare Wellness Ltd'
+      },
+      {
+        productName: 'Povidone-Iodine Topical Solution USP',
+        strength: '10% w/v (Equivalent to 1% available iodine)',
+        route: 'Topical (applied to skin or wound with cotton/gauze)',
+        instructions: 'Apply undiluted to the affected area 1–3 times daily and allow to dry. May be covered with a sterile bandage.',
+        sideEffects: 'Local skin irritation, staining of skin/fabric, rare iodine hypersensitivity.',
+        storage: 'Store below 25°C, protected from light, in a tightly closed container.',
+        batch: 'PVP-3398',
+        expiry: '2026-12',
+        rxType: 'OTC',
+        warnings: 'FOR EXTERNAL USE ONLY. Avoid in patients with thyroid disorders or iodine allergy; not for prolonged use on deep wounds or severe burns.',
+        manufacturer: 'SteriShield Antiseptics'
+      }
+    ]
+  },
+
+  SUSPENSIONS: {
+    category: 'SUSPENSIONS',
+    shortName: 'Suspensions',
+    categoryTag: 'Biphasic Coarse Dispersion Liquid',
+    image: '/images/dosage-forms/suspensions.jpg',
+    imageCaption: 'Cloudy pediatric oral suspension being shaken in an amber bottle to uniformly redisperse the settled insoluble drug particles.',
+    definition: 'Suspensions are biphasic liquid dosage forms in which finely divided insoluble solid particles (the dispersed or internal phase, typically 0.5–100 µm) are uniformly distributed throughout a liquid vehicle (the continuous or external phase) with the help of wetting and suspending agents. Because the drug does not dissolve, particles settle on standing and the product MUST be shaken before every dose.',
+    classification: [
+      'Oral Suspensions (Antibiotic & antipyretic syrups with insoluble APIs)',
+      'Dry Powders for Reconstitution ("Dry syrup" — reconstitute with boiled & cooled water)',
+      'Topical Suspensions / Lotions (Calamine lotion, shake-lotions)',
+      'Parenteral Depot Suspensions (Sterile microcrystalline IM suspensions — slow release)',
+      'Ophthalmic & Otic Suspensions (Sterile micronized suspensions, particles < 10 µm)'
+    ],
+    routesOfAdministration: ['Oral', 'Topical', 'Intramuscular (depot)', 'Ophthalmic / Otic'],
+    commonExcipients: [
+      'Suspending Agents (increase viscosity): Xanthan gum, Acacia, Tragacanth, Sodium carboxymethylcellulose, Bentonite/Veegum',
+      'Wetting Agents: Polysorbate 20/80 (Tween), Sodium lauryl sulfate',
+      'Flocculating Agents (prevent hard caking): Electrolytes such as Potassium chloride, Aluminium chloride, Sodium citrate',
+      'Sweeteners & Flavors: Sucrose, Sorbitol, Tutti-frutti/Banana flavors for pediatric masking',
+      'Preservatives: Methylparaben, Propylparaben, Sodium benzoate',
+      'Buffers: Citrate or Phosphate buffers for pH stability'
+    ],
+    keyAdvantages: [
+      'Enables convenient liquid dosing of drugs that are completely insoluble in water',
+      'Masks bitter, nauseous drugs far better than solutions (drug stays as tasteless solid particles)',
+      'Higher chemical stability than solutions for drugs that degrade rapidly in dissolved form (e.g., ampicillin in dry syrup)',
+      'Depot IM suspensions provide prolonged sustained release lasting days to months'
+    ],
+    disadvantagesOrLimitations: [
+      'CRITICAL: dose uniformity is lost if the bottle is not shaken — risk of underdosing or overdosing',
+      'Sedimentation over time can form an irreversible hard "cake" at the bottom that cannot be redispersed',
+      'Bulky product with shorter beyond-use dating (reconstituted antibiotic syrups: usually 7–14 days)',
+      'Grittiness and poor elegance if particle size exceeds ~75 µm for oral use'
+    ],
+    pharmaceuticalQualityTests: [
+      'Sedimentation Volume Ratio (F = Vu/Vo, target close to 1) & Redispersibility (number of inversions to rehomogenize)',
+      'Particle Size Distribution (Microscopy / laser diffraction, particles < 75 µm oral, < 10 µm ophthalmic)',
+      'Viscosity & Rheological Profile (pseudoplastic/thixotropic flow preferred)',
+      'Zeta Potential (colloid stability indicator, ~± 20–30 mV for flocculated suspensions)',
+      'pH, Assay/Content Uniformity after shaking, Microbial Limit Testing'
+    ],
+    studentDispensingTips: [
+      'GOLDEN RULE: Always affix the auxiliary label "SHAKE WELL BEFORE USE" on every suspension.',
+      'For dry syrups: demonstrate reconstitution, mark the water fill-line, and give the beyond-use date (e.g., 7 days refrigerated).',
+      'Check for irreversible caking before dispensing — a hard sediment that stays put on vigorous shaking means reject the bottle.',
+      'Advise measuring each dose with the supplied calibrated syringe/cup immediately after shaking.'
+    ],
+    exampleProducts: [
+      {
+        productName: 'Amoxicillin for Oral Suspension USP (Dry Syrup)',
+        strength: '125 mg / 5 mL after reconstitution (60 mL bottle)',
+        route: 'Oral',
+        instructions: 'Add boiled & cooled water up to the mark and shake well. Children: 5 mL every 8 hours. Shake before every dose.',
+        sideEffects: 'Diarrhea, nausea, skin rash; stop and seek care if breathing difficulty or facial swelling occurs (allergy).',
+        storage: 'Store dry powder below 25°C. After reconstitution refrigerate (2–8°C) and discard after 7 days.',
+        batch: 'AMS-5520-DS',
+        expiry: '2026-10 (dry powder)',
+        rxType: 'Rx Only',
+        warnings: 'SHAKE WELL BEFORE USE. Discard any remaining reconstituted suspension after 7 days. Not for penicillin-allergic patients.',
+        manufacturer: 'Zenith BioPharma Corp.'
+      },
+      {
+        productName: 'Calamine Lotion IP',
+        strength: 'Calamine 15% + Zinc Oxide 5% w/v (100 mL)',
+        route: 'Topical (applied to skin)',
+        instructions: 'Shake the bottle well, then dab onto the affected itchy skin with cotton 2–3 times daily and allow to dry.',
+        sideEffects: 'Very safe; mild skin dryness or slight irritation.',
+        storage: 'Store in a cool place below 30°C. Do not freeze.',
+        batch: 'CAL-8845',
+        expiry: '2027-03',
+        rxType: 'OTC',
+        warnings: 'SHAKE WELL BEFORE USE. For external use only — avoid eyes and mucous membranes; do not apply on oozing infected wounds.',
+        manufacturer: 'DermaCare Laboratories'
+      }
+    ]
+  },
+
+  GARGLES: {
+    category: 'GARGLES',
+    shortName: 'Gargles',
+    categoryTag: 'Oropharyngeal Medicated Liquid (Expectorated)',
+    image: '/images/dosage-forms/gargles.jpg',
+    imageCaption: 'Antiseptic povidone-iodine gargle concentrate in an amber bottle with its small measuring cup for dilution before gargling.',
+    definition: 'Gargles are aqueous solutions — frequently dispensed as concentrates to be diluted with warm water — intended for intimate agitated contact with the mucous membrane of the pharynx and throat. The head is tilted back and air is bubbled through the liquid for 15–30 seconds, after which the gargle is ALWAYS expectorated (spit out) and never swallowed. They deliver antiseptic, astringent, analgesic, or soothing action to the pharynx in pharyngitis and tonsillitis.',
+    classification: [
+      'Antiseptic/Antibacterial Gargles (Povidone-iodine 2%, Chlorhexidine)',
+      'Analgesic / Anti-inflammatory Gargles (Benzydamine HCl rinse)',
+      'Concentrated Gargles for Dilution (Potassium permanganate 1:1000, Hydrogen peroxide 3% diluted)',
+      'Saline / Hypertonic Gargles (Warm salt water, competitive osmotic soothing)',
+      'Phenolated / Thymolated Gargles (Compound thymol glycerin gargle BPC)'
+    ],
+    routesOfAdministration: ['Oropharyngeal (topical contact — expectorated, never swallowed)'],
+    commonExcipients: [
+      'Vehicle: Purified Water IP, often with Glycerol as a soothing demulcent',
+      'Antimicrobials: Povidone-iodine 2% w/v, Chlorhexidine gluconate 0.2%, Thymol, Menthol',
+      'Cosolvents: Ethanol (5–20%) for thymol/menthol solubilization',
+      'Flavors: Peppermint, Menthol, Eucalyptus oil (cooling demulcent sensation)',
+      'Sweeteners & Buffers: Sodium saccharin, Citrate buffer (a slightly acidic pH suits antibacterials)'
+    ],
+    keyAdvantages: [
+      'Delivers a very high local drug concentration directly onto inflamed pharyngeal tissue',
+      'Negligible systemic absorption — very safe adjunctive therapy',
+      'Rapid symptomatic relief of sore-throat pain, dryness, and odour',
+      'Simple and inexpensive; can even be prepared extemporaneously (warm saline)'
+    ],
+    disadvantagesOrLimitations: [
+      'Contact time with the pharynx is brief — needs repeating 3–4 or more times daily',
+      'Completely unsuitable for young children (generally < 6–8 years) who cannot gargle safely',
+      'Accidental swallowing of concentrated antiseptics (iodine, permanganate) can be harmful',
+      'Reaches only the pharynx — ineffective for deep laryngeal or tracheal infection'
+    ],
+    pharmaceuticalQualityTests: [
+      'Assay of Antiseptic Content (available iodine by thiosulfate titration for PVP-I)',
+      'pH Determination & Specific Gravity',
+      'Clarity & Absence of Particulate Matter',
+      'Microbial Limit & Preservative Efficacy Testing',
+      'Alcohol Content (where ethanol is a cosolvent, USP <611>)'
+    ],
+    studentDispensingTips: [
+      'Bold auxiliary label is mandatory: "FOR GARGLE ONLY — DO NOT SWALLOW".',
+      'Concentrates must be diluted exactly as directed (commonly ~15 mL in a glass of warm water) — demonstrate the dilution.',
+      'Advise gargling for 15–30 seconds per mouthful, 3–4 times daily, ideally after meals.',
+      'Warn that young children unable to gargle should use an alternative (throat spray/lozenge) instead.',
+      'Advise avoiding food or drink for 30 minutes after use so the antiseptic film keeps working.'
+    ],
+    exampleProducts: [
+      {
+        productName: 'Povidone-Iodine Germicide Gargle',
+        strength: '2% w/v (100 mL with measuring cup)',
+        route: 'Oropharyngeal gargle (expectorated)',
+        instructions: 'Dilute with an equal volume of warm water. Gargle with 10–15 mL for 30 seconds and spit out. Repeat up to 4 times daily. DO NOT SWALLOW.',
+        sideEffects: 'Temporary brown staining, altered taste, mouth irritation; rare iodine hypersensitivity.',
+        storage: 'Store below 25°C, protected from light. Do not refrigerate.',
+        batch: 'GRG-4417-PV',
+        expiry: '2026-11',
+        rxType: 'OTC',
+        warnings: 'DO NOT SWALLOW. Not for children under 6 years. Avoid in thyroid disease, pregnancy, or iodine allergy unless prescribed.',
+        manufacturer: 'SteriShield Antiseptics'
+      },
+      {
+        productName: 'Benzydamine HCl Gargle / Oral Rinse',
+        strength: '0.15% w/v (300 mL)',
+        route: 'Oropharyngeal rinse',
+        instructions: 'Gargle or rinse with 15 mL (undiluted) every 1.5–3 hours as needed for painful mouth and throat conditions, then spit out.',
+        sideEffects: 'Numbness or stinging of the mouth, nausea if swallowed in quantity.',
+        storage: 'Store below 30°C. Discard 6 months after opening.',
+        batch: 'BNZ-2180',
+        expiry: '2027-02',
+        rxType: 'Rx Only',
+        warnings: 'Expectorate after use — do not swallow. Not recommended in children under 12 years.',
+        manufacturer: 'OroMed Therapeutics'
+      }
+    ]
+  },
+
+  MOUTHWASH: {
+    category: 'MOUTHWASH',
+    shortName: 'Mouthwashes',
+    categoryTag: 'Antiseptic Oral Hygiene Rinse',
+    image: '/images/dosage-forms/mouthwash.jpg',
+    imageCaption: 'Bottle of mint-green antiseptic mouthwash with its dosing cap filled, used for plaque control and oral cavity hygiene.',
+    definition: 'Mouthwashes (oral rinses / mouth rinses) are aqueous, usually pleasantly flavoured liquid preparations containing antiseptics, astringents, deodorants, fluoride salts and/or flavours, used to rinse the entire oral cavity. They are swished vigorously around the mouth, between the teeth and along the gumline for about 30 seconds and then expectorated, to reduce dental plaque and gingivitis, prevent caries, treat halitosis and freshen breath. They are classified as cosmetic or therapeutic (medicated) rinses.',
+    classification: [
+      'Therapeutic Antiseptic Rinses (Chlorhexidine gluconate 0.2% — the "gold standard")',
+      'Anticariogenic Fluoride Rinses (Sodium fluoride 0.05% daily / 0.2% weekly)',
+      'Antiplaque Essential-Oil Rinses (Thymol + Menthol + Eucalyptol + Methyl salicylate)',
+      'Cetylpyridinium Chloride (CPC 0.05%) quaternary ammonium rinses',
+      'Desensitizing & Whitening Rinses (Potassium nitrate 3%, Hydrogen peroxide 1.5%)'
+    ],
+    routesOfAdministration: ['Oral cavity topical rinse (swished and expectorated — never swallowed)'],
+    commonExcipients: [
+      'Vehicle: Purified Water IP, frequently with 0–27% v/v Ethanol as cosolvent (alcohol-free variants use propylene glycol)',
+      'Antiseptics: Chlorhexidine gluconate 0.12–0.2%, Cetylpyridinium chloride 0.05%, Essential oils',
+      'Humectants: Glycerol, Sorbitol solution 70%',
+      'Surfactants: Poloxamer 407, Sodium lauryl sulfate (foaming and dispersal of actives)',
+      'Sweeteners & Flavors: Saccharin sodium, Xylitol, Peppermint/Menthol/Methyl salicylate oils; approved food colors'
+    ],
+    keyAdvantages: [
+      'Reaches interdental spaces, gingival crevices, and posterior areas that a toothbrush misses',
+      'Clinically proven adjunct (with brushing) for plaque, gingivitis and caries control',
+      'Freshens breath immediately and masks oral malodor (halitosis)',
+      'Simple self-administration improves patient compliance, including post-surgery when brushing is painful'
+    ],
+    disadvantagesOrLimitations: [
+      'An adjunct, never a substitute for mechanical brushing and flossing',
+      'Chlorhexidine causes brown extrinsic staining of teeth/tongue and taste alteration with courses > 2 weeks',
+      'Alcohol-based rinses cause burning/dryness and are unsuitable for children and recovering alcoholics',
+      'Swallowing fluoride rinses risks fluorosis in young children — supervise ages 6–12, avoid under 6'
+    ],
+    pharmaceuticalQualityTests: [
+      'Assay of active antiseptic (e.g., chlorhexidine by HPLC) and fluoride content (fluoride ion-selective electrode)',
+      'pH Determination (typically 4.2–7.0 depending on active)',
+      'Alcohol Content by GC where ethanol is present (label claim ± 5%)',
+      'Specific Gravity / Density & Clarity',
+      'Microbial Limit Testing (total aerobic count, absence of Pseudomonas aeruginosa)'
+    ],
+    studentDispensingTips: [
+      'Counsel the correct technique: 10–20 mL undiluted, swish vigorously for 30 seconds, spit out fully — do NOT swallow.',
+      'Advise use at a DIFFERENT time from toothbrushing, or ≥ 30 minutes after: toothpaste SLS inactivates chlorhexidine.',
+      'Do not eat, drink, or rinse with water for 30 minutes afterwards to prolong the substantivity effect.',
+      'Chlorhexidine courses should normally not exceed 2 weeks due to tooth staining — advise brushing removable stains.',
+      'Keep away from children; alcohol-containing rinses should be dispensed with child-resistant caps.'
+    ],
+    exampleProducts: [
+      {
+        productName: 'Chlorhexidine Gluconate Mouthwash IP',
+        strength: '0.2% w/v (150 mL with 15 mL cap)',
+        route: 'Oral rinse (expectorated)',
+        instructions: 'Rinse with 10–15 mL undiluted for 30 seconds twice daily (morning and night), then spit out. Do not swallow.',
+        sideEffects: 'Reversible brown staining of teeth and tongue, altered taste, mild oral mucosal irritation.',
+        storage: 'Store below 25°C, protected from light. Discard 1 month after opening.',
+        batch: 'CHX-9034-MW',
+        expiry: '2026-12',
+        rxType: 'OTC',
+        warnings: 'DO NOT SWALLOW. Use ≥ 30 minutes apart from toothpaste. Limit to 2-week courses to prevent staining.',
+        manufacturer: 'DentoGuard Oral Care'
+      },
+      {
+        productName: 'Sodium Fluoride Anticavity Mouth Rinse',
+        strength: '0.05% w/v NaF (226 ppm fluoride, 250 mL)',
+        route: 'Oral rinse',
+        instructions: 'Once daily at bedtime after brushing, swish 10 mL vigorously for 1 minute and spit out. Do not eat or drink for 30 minutes.',
+        sideEffects: 'Minimal; nausea or abdominal upset if large volumes are swallowed.',
+        storage: 'Store at 20–25°C in the original plastic container (fluoride attacks glass).',
+        batch: 'FLR-6511',
+        expiry: '2027-04',
+        rxType: 'OTC',
+        warnings: 'DO NOT SWALLOW. Not for children under 6 years; supervise children 6–12 years. Fluoride rinse — store in plastic only.',
+        manufacturer: 'DentoGuard Oral Care'
+      }
+    ]
+  },
+
+  POWDERS: {
+    category: 'POWDERS',
+    shortName: 'Powders',
+    categoryTag: 'Dry Finely Divided Solid Dosage Form',
+    image: '/images/dosage-forms/powders.jpg',
+    imageCaption: 'Finely divided white medicinal powder heaped on a glass slab with a spatula, mortar and pestle, and unit-dose sachets for oral use.',
+    definition: 'Powders are intimate mixtures of dry, finely divided drugs and/or chemicals intended for internal administration (oral powders dissolved or suspended in water) or for external application (dusting powders). They are dispensed either as bulk powders measured by the patient or as divided powders — individual unit doses wrapped in papers or sealed in sachets. Powders are also the starting material for granules, tablets, and capsules.',
+    classification: [
+      'Bulk Oral Powders (Antacid powders, ORS powders — dosed with a spoon/scoop)',
+      'Divided (Unit-Dose) Powders (Sealed papers or sachets, e.g., headache powders, ORS sachets)',
+      'Dusting Powders (Sterile/topical — talc, antifungal powders for skin folds)',
+      'Dentifrices / Tooth Powders (Abrasive dental powders)',
+      'Effervescent Powders (Citric acid + Sodium bicarbonate + Tartaric acid granulated pair)',
+      'Insufflations (Fine powders blown into ear/nose/throat or body cavities)'
+    ],
+    routesOfAdministration: ['Oral (after mixing with water)', 'Topical (dusting on skin)', 'Nasal / Otic insufflation', 'Reconstitution into solutions or suspensions'],
+    commonExcipients: [
+      'Diluents / Carriers: Lactose monohydrate, Starch, Mannitol, Dextrose',
+      'Glidants (improve flow): Colloidal silicon dioxide, Purified talc',
+      'Adsorbents: Light kaolin, Magnesium carbonate (for bulky antacid powders)',
+      'Effervescent Couple: Citric acid + Sodium bicarbonate (CO2 liberation aids dispersal and palatability)',
+      'Sweeteners & Flavors (oral powders): Sucrose, Aspartame, Fruit flavors',
+      'Lubricants for insufflators and moisture scavengers: rarely added — dryness itself is the stabilizer'
+    ],
+    keyAdvantages: [
+      'Maximum chemical and physical stability — no water means almost no hydrolysis or microbial growth',
+      'Rapid onset once swallowed: enormous surface area gives ready dispersion and quick absorption',
+      'Ideal for bulky, large-dose drugs (ORS salts, kaolin) that cannot fit inside a tablet or capsule',
+      'Simple, economical manufacturing and easy compounding; no swallowing difficulty for children or the elderly'
+    ],
+    disadvantagesOrLimitations: [
+      'Unpleasant or bitter drug tastes are NOT masked — poor palatability without flavouring',
+      'Bulk powder dosing with spoons is inaccurate and non-uniform',
+      'Hygroscopic and deliquescent powders cake and liquefy on exposure to humid air — demand airtight packaging',
+      'Fine powders are a dust/inhalation hazard during manufacture and handling',
+      'Unsuitable as bulk powders for potent very-low-dose drugs (dose-measuring error is dangerous)'
+    ],
+    pharmaceuticalQualityTests: [
+      'Particle Size Analysis (Sieve analysis IP / laser diffraction; dusting powders pass 150 µm sieve)',
+      'Flow Properties: Angle of Repose (target < 30° free-flowing), Carr\'s Compressibility Index (< 25%)',
+      'Bulk & Tapped Density (USP <616>)',
+      'Moisture Content (Loss on Drying — usually NMT 1–2% w/w)',
+      'Uniformity of Weight of Divided Powders (unit-dose sachets) & Uniformity of Content',
+      'Effervescence Time & Solution Clarity for effervescent powders'
+    ],
+    studentDispensingTips: [
+      'Use GEOMETRIC DILUTION when weighing potent drugs with diluents: triturate the smallest quantity first with an equal bulk of diluent, doubling stepwise.',
+      'Always pack hygroscopic powders in airtight, wide-mouth, moisture-proof containers with the label "KEEP TIGHTLY CLOSED — STORE DRY".',
+      'Oral powders: label clearly "DISSOLVE OR MIX IN WATER BEFORE USE" and state the exact volume of water per dose.',
+      'ORS sachets: counsel use of exactly the stated volume of safe drinking water and discard reconstituted solution after 24 hours.',
+      'Dusting powders: apply a thin layer to clean dry skin; avoid inhaling and never dust talc onto deep wounds.'
+    ],
+    exampleProducts: [
+      {
+        productName: 'Oral Rehydration Salts IP (ORS Sachet)',
+        strength: 'Sodium chloride 0.52 g, Potassium chloride 0.30 g, Sodium citrate 0.58 g, Dextrose anhydrous 2.70 g per 4.1 g sachet (for 200 mL)',
+        route: 'Oral — dissolve entire sachet in 200 mL of clean water',
+        instructions: 'Dissolve the complete contents of one sachet in 200 mL of boiled & cooled drinking water. Sip frequently after each loose stool. Discard unused solution after 24 hours.',
+        sideEffects: 'Well tolerated; vomiting if gulped; hypernatremia only if diluted in less than the stated water volume.',
+        storage: 'Store sachets below 30°C, protected from moisture, in the original pouch.',
+        batch: 'ORS-2215-PW',
+        expiry: '2027-08',
+        rxType: 'OTC',
+        warnings: 'Use the EXACT 200 mL water volume per sachet. Do not add extra sugar or salt. Solution older than 24 hours must be thrown away.',
+        manufacturer: 'HydraCare Wellness Ltd'
+      },
+      {
+        productName: 'Clotrimazole Antifungal Dusting Powder',
+        strength: '1% w/w (75 g container with sprinkle top)',
+        route: 'Topical (dusted onto skin folds)',
+        instructions: 'Dust a thin layer over the affected dry skin area and into socks/footwear 2–3 times daily. Continue for 2 weeks after symptoms clear.',
+        sideEffects: 'Mild local irritation or burning; rare allergic contact dermatitis.',
+        storage: 'Store below 30°C in a tightly closed container. Keep dry.',
+        batch: 'CLT-5502-DP',
+        expiry: '2027-01',
+        rxType: 'OTC',
+        warnings: 'FOR EXTERNAL USE ONLY. Avoid inhaling the powder and contact with eyes. Do not apply to broken blistered skin without medical advice.',
+        manufacturer: 'DermaSafe Pharmaceuticals'
+      }
+    ]
+  },
+
+  'NASAL DROPS': {
+    category: 'NASAL DROPS',
+    shortName: 'Nasal Drops & Sprays',
+    categoryTag: 'Intranasal Mucosal Dosage Form',
+    image: '/images/dosage-forms/nasal-drops.jpg',
+    imageCaption: 'Plastic squeeze dropper bottle of isotonic saline nasal drops alongside a metered nasal spray pump for intranasal administration.',
+    definition: 'Nasal drops and nasal sprays are sterile or near-sterile aqueous (rarely oily) solutions or suspensions of drugs instilled dropwise into, or sprayed onto, the nasal mucosa. Formulated nearly isotonic with nasal secretions (~0.9% NaCl) and at a slightly acidic pH of 5.5–6.5, they act locally as decongestants, anti-allergics and corticosteroids, and also serve as a convenient systemic route (e.g., desmopressin, naloxone) that bypasses first-pass metabolism through the highly vascular nasal epithelium.',
+    classification: [
+      'Nasal Decongestants (Xylometazoline 0.1%, Oxymetazoline 0.05% — sympathomimetic vasoconstrictors)',
+      'Saline Nasal Drops & Sprays (0.65–0.9% isotonic; 2–3% hypertonic moisturizing lavage)',
+      'Nasal Corticosteroid Sprays (Mometasone, Fluticasone — allergic rhinitis)',
+      'Nasal Antihistamines & Anticholinergics (Azelastine, Ipratropium)',
+      'Systemic-Acting Nasal Preparations (Desmopressin, Calcitonin, Naloxone rescue spray)'
+    ],
+    routesOfAdministration: ['Intranasal — local mucosal action', 'Intranasal — systemic absorption (olfactory and respiratory mucosa)'],
+    commonExcipients: [
+      'Vehicle: Purified Water IP (never plain tap water; oily bases are rarely used due to lipoid pneumonia risk on aspiration)',
+      'Tonicity Adjusters: Sodium chloride to ~0.9% (isotonic with nasal secretions)',
+      'Buffers: Phosphate/citrate buffers to pH 5.5–6.5',
+      'Preservatives (multidose containers): Benzalkonium chloride 0.01%, Phenylethyl alcohol, Thimerosal (declining use)',
+      'Viscosity Enhancers: Methylcellulose, HPMC (prolong mucosal contact against mucociliary clearance)',
+      'Humectants: Glycerol; Antioxidants: Sodium metabisulfite (caution — sulfite sensitivity)'
+    ],
+    keyAdvantages: [
+      'Rapid relief of nasal congestion and rhinitis directly at the site of action within minutes',
+      'Needle-free systemic route that bypasses hepatic first-pass metabolism (peptides, naloxone, migraine triptans)',
+      'Small doses, minimal systemic side effects for locally acting agents',
+      'Very convenient patient self-administration with metered sprays delivering exact volumes'
+    ],
+    disadvantagesOrLimitations: [
+      'RHINITIS MEDICAMENTOSA: decongestant sprays used over 5–7 days cause rebound congestion worse than the original',
+      'Nasal mucociliary clearance removes the drug within ~15–30 minutes — short residence time',
+      'Hand-operated nasal drops give poorer dose precision than metered pump sprays',
+      'Benzalkonium preservative can irritate and damage ciliary function with long-term use',
+      'Dropper tip contamination risks cross-infection — bottles are strictly single-patient use'
+    ],
+    pharmaceuticalQualityTests: [
+      'pH Determination (5.5–6.5 physiological nasal tolerance)',
+      'Osmolality / Tonicity (~240–450 mOsm/kg tolerated; target ~isotonic)',
+      'Delivered Dose Uniformity & Droplet/Particle Size Distribution for metered sprays (droplets > 50 µm to avoid lung deposition)',
+      'Clarity, Particulate Matter & Leaker Testing of the container-closure system',
+      'Assay, Weight per Drop, Microbial Limit & Preservative Efficacy Testing (USP <51>)'
+    ],
+    studentDispensingTips: [
+      'Teach the technique: blow the nose gently, tilt the head back ("Mecca position"), instill drops and stay reclined 1–2 minutes; for sprays keep the head upright and sniff gently.',
+      'Warn in bold: "DECONGESTANT DROPS — MAXIMUM 5 TO 7 DAYS OF USE" to prevent rhinitis medicamentosa.',
+      'Instruct never to touch the dropper/nozzle tip to the nose or fingers, and never to share the bottle between family members.',
+      'Prime metered sprays before first use (a few test sprays into the air) and clean the nozzle after each use.',
+      'For infants, saline drops given 15 minutes before feeds and sleep clear secretions without any drug.'
+    ],
+    exampleProducts: [
+      {
+        productName: 'Xylometazoline HCl Nasal Drops IP',
+        strength: '0.1% w/v (Adult; 10 mL dropper bottle)',
+        route: 'Intranasal instillation',
+        instructions: 'Instill 2–3 drops into each nostril every 8–10 hours as needed for blocked nose. Maximum 7 days continuous use.',
+        sideEffects: 'Transient nasal burning/stinging, sneezing, dryness; rebound congestion on prolonged use.',
+        storage: 'Store below 30°C. Discard 28 days after first opening. Keep away from children.',
+        batch: 'XYL-7741-ND',
+        expiry: '2026-12',
+        rxType: 'OTC',
+        warnings: 'Do NOT exceed 7 days of use (risk of rhinitis medicamentosa/rebound congestion). Use the 0.05% paediatric strength for children 6–12 years only. Not for infants.',
+        manufacturer: 'RespiCare Remedies'
+      },
+      {
+        productName: 'Sodium Chloride Nasal Drops (Saline)',
+        strength: '0.9% w/v (Isotonic; 15 mL squeeze bottle)',
+        route: 'Intranasal',
+        instructions: 'Instill 2–6 drops into each nostril as often as required to moisturize and clear the nose. Safe from birth.',
+        sideEffects: 'Virtually none; slight transient stinging if the mucosa is raw.',
+        storage: 'Store below 30°C. Discard 28 days after opening.',
+        batch: 'SAL-3390',
+        expiry: '2027-06',
+        rxType: 'OTC',
+        warnings: 'Single-patient use only — do not share the bottle. Discard if the solution becomes cloudy.',
+        manufacturer: 'RespiCare Remedies'
       }
     ]
   }

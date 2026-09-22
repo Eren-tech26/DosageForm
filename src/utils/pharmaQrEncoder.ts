@@ -13,6 +13,24 @@ export function buildFormUrl(form: DosageFormCategory): string {
 }
 
 /**
+ * URL-safe slug for a dosage form, used for the pre-generated static QR files
+ * stored under public/qr/forms/ (e.g. 'OINTMENTS & CREAMS' -> 'ointments-creams').
+ * Keep in sync with scripts/generate-dosageform-qr.mjs.
+ */
+export function formSlug(form: DosageFormCategory): string {
+  return form
+    .toLowerCase()
+    .replace(/&/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+/** Static pre-generated QR assets for a dosage form (downloaded from the QR Hub). */
+export function formQrSvgPath(form: DosageFormCategory): string {
+  return `/qr/forms/${formSlug(form)}.svg`;
+}
+
+/**
  * Loads the PharmaQR logo as an HTMLImageElement so it can be composited
  * onto generated QR codes. The logo is cached after first load.
  */
