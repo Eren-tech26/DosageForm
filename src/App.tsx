@@ -174,7 +174,7 @@ export function App() {
                 }`}
               >
                 <Pill className="w-4 h-4" />
-                <span>Dosage Forms (12)</span>
+                <span>Dosage Forms ({DOSAGE_FORM_LIST.length})</span>
               </button>
 
               <button
@@ -354,10 +354,10 @@ export function App() {
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-green-100 text-green-900 border border-green-200 uppercase tracking-wider">
                   {activeTab === 'dosage'
-                    ? '12 Dosage Forms'
+                    ? `${DOSAGE_FORM_LIST.length} Dosage Forms`
                     : activeTab === 'equipment'
-                    ? '7 Lab Instruments'
-                    : '19 Permanent QR Codes'}
+                    ? `${EQUIPMENT_LIST.length} Lab Instruments`
+                    : `${DOSAGE_FORM_LIST.length + EQUIPMENT_LIST.length} Permanent QR Codes`}
                 </span>
                 <span className="text-xs text-gray-500 font-medium">
                   B. Pharm Syllabi Study Guide
@@ -376,7 +376,7 @@ export function App() {
                 {activeTab === 'equipment' &&
                   'Operating procedures, principles, technical specifications, safety precautions, and permanent lab machine QR stickers for B. Pharm practicals.'}
                 {activeTab === 'qr-hub' &&
-                  'Permanent QR codes for all 12 dosage forms and 7 laboratory instruments. Ready to download in high-res PNG/SVG or print as adhesive lab machine stickers.'}
+                  `Permanent QR codes for all ${DOSAGE_FORM_LIST.length} dosage forms and ${EQUIPMENT_LIST.length} laboratory instruments. Ready to download in high-res PNG/SVG or print as adhesive lab machine stickers.`}
               </p>
             </div>
           </div>
@@ -467,7 +467,7 @@ export function App() {
                 onClick={() => switchTab('dosage')}
                 className="hover:text-green-800 cursor-pointer"
               >
-                12 Dosage Forms
+                {DOSAGE_FORM_LIST.length} Dosage Forms
               </button>
               <span>·</span>
               <button

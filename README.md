@@ -1,13 +1,13 @@
 # PharmaQR — Pharmaceutical Dosage Forms & Lab Equipment Portal
 
-A comprehensive digital study and laboratory reference system for pharmacy students and instructors, featuring **12 pharmaceutical dosage forms** and **7 core pharmacy laboratory instruments**, complete with permanent QR codes, standard operating procedures (SOPs), academic dossiers, and printable equipment stickers.
+A comprehensive digital study and laboratory reference system for pharmacy students and instructors, featuring **19 pharmaceutical dosage forms** and **7 core pharmacy laboratory instruments**, complete with permanent QR codes, standard operating procedures (SOPs), academic dossiers, and printable equipment stickers.
 
 ## Key Features
 
-### 1. 12 Pharmaceutical Dosage Forms
-- **Categories**: Tablets, Capsules, Syrups, Injections, Ointments & Creams, Eye/Ear Drops, Liquid Dosage Forms, Topical Preparations, Inhalation Products, Special Dosage Forms, Suppositories, Parenterals & Misc.
+### 1. 19 Pharmaceutical Dosage Forms
+- **Categories**: Tablets, Capsules, Syrups, Injections, Ointments & Creams, Eye/Ear Drops, Liquid Dosage Forms, Topical Preparations, Inhalation Products, Special Dosage Forms, Suppositories, Parenterals & Misc., Pastes, Solutions, Suspensions, Gargles, Mouthwash, Powders, Nasal Drops.
 - **Academic Dossiers**: Definitions, sub-classifications, routes of administration, excipient formulation science, pharmacopoeial quality control (QC) tests (IP/BP/USP), advantages/disadvantages, clinical dispensing pearls, and authentic product examples.
-- **Fixed QR per form**: Each dosage form has a permanent QR code linking directly to its academic guide (`?form=CATEGORY`).
+- **Fixed QR per form**: Each dosage form has a permanent QR code linking directly to its academic guide (`?form=CATEGORY`). Scanning it plays the PharmaQR scan intro splash and then opens that form's dossier. Pre-generated PNG/SVG masters for all 19 forms live in `public/qr/forms/` (regenerate with `npm run qr:forms`).
 - **Cross-Referenced Equipment**: Instant links to the laboratory machines used to evaluate or manufacture each formulation (e.g. Tablets ↔ Friability Apparatus; Injections ↔ Hot Air Oven & Incubator).
 
 ### 2. 6 Pharmacy Laboratory Equipment Guides & SOPs
@@ -36,8 +36,8 @@ A comprehensive digital study and laboratory reference system for pharmacy stude
   - Export to high-res PNG (1200x1200px) and vector SVG.
 
 ### 4. Unified, Organised Portal Architecture
-- Tab navigation between **Dosage Forms (12)**, **Lab Equipment (7)**, and **QR Hub & Labels (19)**.
-- Global search across all 19 formulations and machines.
+- Tab navigation between **Dosage Forms (19)**, **Lab Equipment (7)**, and **QR Hub & Labels (26)**.
+- Global search across all 26 formulations and machines.
 - Deep linking support (`?form=...`, `?equipment=...`, `?tab=...`).
 - Printable styles that hide UI elements when generating physical stickers or study sheets.
 
@@ -57,6 +57,7 @@ npm run dev               # Start local development server
 npm run build             # Build production bundle into dist/
 npm run preview           # Preview production build
 npm run qr:equipment      # Regenerate all permanent equipment QR files in public/qr/
+npm run qr:forms          # Regenerate all permanent dosage-form QR files in public/qr/forms/
 ```
 
 ## Developer & Academic Institution

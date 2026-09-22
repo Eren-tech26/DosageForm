@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { ArrowLeft, BookOpen, ShieldCheck, Thermometer, TriangleAlert } from 'lucide-react';
 import { ScanIntroSplash } from './ScanIntroSplash';
+import { DOSAGE_FORM_LIST } from '../data/dosageFormsData';
 
 const manufacturerUrl = 'https://www.benchmarkscientific.com/product/h2200-h/';
 const manualUrl = 'https://www.sigmaaldrich.com/deepweb/assets/sigmaaldrich/product/documents/352/399/z763314bul.pdf';
@@ -133,7 +134,7 @@ export function MiniIncubatorGuide() {
             <p className="text-xs text-gray-500 mt-3">Reviewed 20 September 2026. Educational overview, not a validated operating procedure.</p>
           </section>
           <a href={window.location.pathname} className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-2.5 rounded-xl print:hidden">
-            <ArrowLeft className="w-4 h-4" aria-hidden="true" /> Browse All 12 Dosage Forms
+            <ArrowLeft className="w-4 h-4" aria-hidden="true" /> Browse All {DOSAGE_FORM_LIST.length} Dosage Forms
           </a>
         </div>
       </article>
